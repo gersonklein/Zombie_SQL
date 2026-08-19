@@ -148,7 +148,7 @@ VALUES ('BIA', 'RASTREADORA', 'PRONTA');</textarea>
   <h2>EQUIPE REORGANIZADA</h2>
   <p>A nova agente foi registrada, o status operacional foi atualizado e a missão cancelada saiu da escala.</p>
   <div class="reward">+500 XP // HUNTER HQ OPERACIONAL</div><br>
-  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+  <button class="btn" onclick="continueCampaign()">▶ CONTINUAR CAMPANHA</button>
  </div>
 </div>
 
@@ -235,6 +235,14 @@ function runQuery(){
 function resetQuery(){document.getElementById('editor').value=examples[stage]}
 function showHint(){document.getElementById('hintBox').classList.add('show');document.getElementById('hintText').textContent=hints[Math.min(hintIndex,hints.length-1)];document.getElementById('hintCount').textContent=Math.min(hintIndex+1,hints.length);if(hintIndex<hints.length-1)hintIndex++}
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function continueCampaign(){
+ localStorage.setItem("zombieApocalypse.module07.completed","true");
+ localStorage.setItem("zombieApocalypse.currentModule","08");
+ localStorage.setItem("zombieApocalypse.xp","2460");
+ window.location.href="index.html#mapa";
+}
+
 document.getElementById('editor').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}})
 </script>
 </body>

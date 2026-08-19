@@ -169,7 +169,7 @@ WHERE carga > (
   <h2>PADRÃO CONFIRMADO</h2>
   <p>As evidências foram comparadas, classificadas e reunidas. A equipe encontrou um padrão consistente na infecção e pode entregar o relatório à sala de comando.</p>
   <div class="reward">+600 XP // EVIDÊNCIA DESCOBERTA</div><br>
-  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+  <button class="btn" onclick="continueCampaign()">▶ CONTINUAR CAMPANHA</button>
  </div>
 </div>
 
@@ -297,6 +297,14 @@ function showHint(){
  if(hintIndex<hints.length-1)hintIndex++;
 }
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function continueCampaign(){
+ localStorage.setItem("zombieApocalypse.module08.completed","true");
+ localStorage.setItem("zombieApocalypse.currentModule","09");
+ localStorage.setItem("zombieApocalypse.xp","2800");
+ window.location.href="index.html#mapa";
+}
+
 document.getElementById('editor').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}})
 </script>
 </body>

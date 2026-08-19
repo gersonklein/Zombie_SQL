@@ -210,7 +210,7 @@ LEFT JOIN sinais
   <h2>ZONA MAPEADA</h2>
   <p>Todos os pontos foram preservados e os sinais sem localização foram isolados para investigação. A central agora enxerga os vazios do mapa.</p>
   <div class="reward">+450 XP // RADAR AMPLIADO</div><br>
-  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+  <button class="btn" onclick="continueCampaign()">▶ CONTINUAR CAMPANHA</button>
  </div>
 </div>
 
@@ -325,6 +325,17 @@ function showHint(){
  if(hintIndex<hints.length-1)hintIndex++;
 }
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function continueCampaign(){
+  // Persiste a conclusão do Módulo 06 para a progressão da campanha.
+  localStorage.setItem("zombieApocalypse.module06.completed","true");
+  localStorage.setItem("zombieApocalypse.currentModule","07");
+  localStorage.setItem("zombieApocalypse.xp","1950");
+
+  // Retorna à central para continuar a campanha.
+  window.location.href="index.html#mapa";
+}
+
 document.getElementById('editor').addEventListener('keydown',e=>{
  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}
 });

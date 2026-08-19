@@ -174,7 +174,7 @@ WHERE ST_DWithin(
   <h2>O MUNDO ESTÁ RECOMEÇANDO</h2>
   <p>Você atravessou os dez módulos. Agora os dados não servem apenas para sobreviver: eles ajudam a reconstruir a cidade, conectar serviços e decidir onde a humanidade deve recomeçar.</p>
   <div class="reward">+1000 XP // CAMPANHA CONCLUÍDA</div><br>
-  <button class="btn" onclick="closeSuccess()">ENCERRAR MISSÃO</button>
+  <button class="btn" onclick="finishCampaign()">🏆 CONCLUIR CAMPANHA</button>
  </div>
 </div>
 
@@ -294,6 +294,25 @@ function showHint(){
  if(hintIndex<hints.length-1)hintIndex++;
 }
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function finishCampaign(){
+  if(!done.every(Boolean)){
+    document.getElementById('output').innerHTML='<span class="err">⚠ Conclua as três etapas antes de encerrar a campanha.</span>';
+    return;
+  }
+
+  // Registra a conclusão definitiva da campanha.
+  localStorage.setItem("zombieApocalypse.module10.completed","true");
+  localStorage.setItem("zombieApocalypse.currentModule","10");
+  localStorage.setItem("zombieApocalypse.campaignCompleted","true");
+  localStorage.setItem("zombieApocalypse.xp","4400");
+
+  document.getElementById('success').classList.remove('show');
+  document.getElementById('output').innerHTML='<span class="ok">✓ CAMPANHA CONCLUÍDA. A cidade pode começar a reconstrução.</span>';
+  document.getElementById('resultStatus').textContent='CAMPANHA CONCLUÍDA';
+  document.getElementById('resultStatus').style.color='var(--green)';
+}
+
 document.getElementById('editor').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}})
 </script>
 </body>
