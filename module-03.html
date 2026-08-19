@@ -65,7 +65,7 @@ FROM suprimentos;</textarea>
 </main></div>
 <footer>ZOMBIE SUPPLY RUN // MÓDULO 03 // SISTEMA DE SOBREVIVÊNCIA</footer></div>
 
-<div class="success" id="success"><div class="success-card"><h2>CARGA CALCULADA</h2><p>O manifesto está pronto. A equipe sabe o peso total, o tamanho dos lotes e os extremos da carga.</p><div class="reward">+300 XP // ROTA LIBERADA</div><br><button class="btn" onclick="closeSuccess()">CONTINUAR</button></div></div>
+<div class="success" id="success"><div class="success-card"><h2>CARGA CALCULADA</h2><p>O manifesto está pronto. A equipe sabe o peso total, o tamanho dos lotes e os extremos da carga.</p><div class="reward">+300 XP // ROTA LIBERADA</div><br><button class="btn" onclick="continueCampaign()">▶ CONTINUAR CAMPANHA</button></div></div>
 
 <script>
 const hints=["Precisamos transformar oito linhas em um único total. Procure uma função que some valores.","A função SUM() soma os valores de uma coluna.","A coluna que queremos somar é peso_kg.","COUNT(*) conta quantos registros existem na tabela.","AVG(peso_kg) calcula o peso médio dos lotes.","MIN(peso_kg) encontra o menor peso e MAX(peso_kg) encontra o maior.","Todas essas funções podem aparecer no mesmo SELECT.","A consulta completa termina com FROM suprimentos."];
@@ -85,6 +85,17 @@ function runQuery(){
 function resetQuery(){document.getElementById('editor').value='';document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua o manifesto passo a passo.</span>'}
 function showHint(){document.getElementById('hintBox').classList.add('show');document.getElementById('hintText').textContent=hints[Math.min(hi,hints.length-1)];document.getElementById('hintCount').textContent=Math.min(hi+1,hints.length);if(hi<hints.length-1)hi++}
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function continueCampaign(){
+  if(!document.getElementById('resultStatus').textContent.includes('confirmado')){
+    document.getElementById('output').innerHTML='<span class="err">⚠ Conclua a missão antes de continuar.</span>';
+    return;
+  }
+  localStorage.setItem("zombieApocalypse.module03.completed","true");
+  localStorage.setItem("zombieApocalypse.currentModule","04");
+  localStorage.setItem("zombieApocalypse.xp","1000");
+  window.location.href="index.html#mapa";
+}
 document.getElementById('editor').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}})
 </script>
 </body>

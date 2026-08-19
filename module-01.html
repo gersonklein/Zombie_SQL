@@ -466,6 +466,12 @@ function closeSuccess(){
 }
 
 function goNext(){
+  // Registra a conclusão desta fase para a progressão da campanha.
+  localStorage.setItem("zombieApocalypse.module01.completed", "true");
+  localStorage.setItem("zombieApocalypse.currentModule", "02");
+  localStorage.setItem("zombieApocalypse.xp", "250");
+
+  // Retorna à central, onde o Módulo 02 está disponível.
   window.location.href="index.html#mapa";
 }
 

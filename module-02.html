@@ -169,7 +169,7 @@ LIMIT 2;</textarea>
     <h2>ABRIGOS PRIORITÁRIOS LOCALIZADOS</h2>
     <p>Você identificou os dois abrigos mais lotados e ordenou a informação para a equipe de comando.</p>
     <div class="reward">+250 XP // MISSÃO CONCLUÍDA</div><br>
-    <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+    <button class="btn" onclick="continueCampaign()">▶ CONTINUAR CAMPANHA</button>
   </div>
 </div>
 
@@ -228,6 +228,22 @@ function showHint(){
   if(hintIndex<hints.length-1) hintIndex++;
 }
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function continueCampaign(){
+  if(!completed){
+    document.getElementById('output').innerHTML='<span class="err">⚠ Conclua a missão antes de continuar.</span>';
+    return;
+  }
+
+  // Persiste a conclusão do Módulo 02 para a progressão da campanha.
+  localStorage.setItem("zombieApocalypse.module02.completed", "true");
+  localStorage.setItem("zombieApocalypse.currentModule", "03");
+  localStorage.setItem("zombieApocalypse.xp", "650");
+
+  // O próximo módulo será tratado pela central da campanha.
+  window.location.href="index.html#mapa";
+}
+
 document.getElementById('editor').addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}
 });

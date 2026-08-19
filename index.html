@@ -117,7 +117,7 @@ a{color:inherit;text-decoration:none}
     <div>PROGRESSO DA CAMPANHA</div>
     <div class="progress"><i></i></div>
     <div class="stats">
-      <div class="stat"><b>01 / 10</b><span>Módulo atual</span></div>
+      <div class="stat"><b>01 → 02</b><span>Próxima etapa disponível</span></div>
       <div class="stat"><b>000</b><span>XP acumulado</span></div>
       <div class="stat"><b>0%</b><span>Campanha</span></div>
     </div>
@@ -135,26 +135,31 @@ a{color:inherit;text-decoration:none}
 
 <script>
 const modules = [
-  ["01","O PRIMEIRO ABRIGO","Sobreviver","module-01.html",false],
-  ["02","LAST SHELTER","Abrigos","module-02.html",true],
-  ["03","SUPPLY RUN","Recursos","module-03.html",true],
-  ["04","ZOMBIE HOSPITAL","Triagem","module-04.html",true],
-  ["05","ZOMBIE RADIO","Investigação","module-05.html",true],
-  ["06","ZOMBIE RADAR","Mapa","module-06.html",true],
-  ["07","HUNTER HQ","Equipes","module-07.html",true],
-  ["08","OUTBREAK LAB","Infecção","module-08.html",true],
-  ["09","WAR ROOM","Comando","module-09.html",true],
-  ["10","WORLD DB","Reconstrução","module-10.html",true]
+  ["01","O PRIMEIRO ABRIGO","Sobreviver","module-01.html",false,"active"],
+  ["02","LAST SHELTER","Abrigos","module-02.html",false,"available"],
+  ["03","SUPPLY RUN","Recursos","module-03.html",true,"locked"],
+  ["04","ZOMBIE HOSPITAL","Triagem","module-04.html",true,"locked"],
+  ["05","ZOMBIE RADIO","Investigação","module-05.html",true,"locked"],
+  ["06","ZOMBIE RADAR","Mapa","module-06.html",true,"locked"],
+  ["07","HUNTER HQ","Equipes","module-07.html",true,"locked"],
+  ["08","OUTBREAK LAB","Infecção","module-08.html",true,"locked"],
+  ["09","WAR ROOM","Comando","module-09.html",true,"locked"],
+  ["10","WORLD DB","Reconstrução","module-10.html",true,"locked"]
 ];
 const root=document.getElementById("modules");
 modules.forEach(m=>{
   const el=document.createElement("article");
-  el.className="module "+(m[0]==="01"?"active ":"")+(m[4]?"locked":"");
+  const state=m[5] || (m[4] ? "locked" : "available");
+  el.className="module "+(state==="active"?"active ":"")+(state==="locked"?"locked":"");
+  const stateLabel =
+    state==="active" ? "● ATUAL" :
+    state==="available" ? "● DISPONÍVEL" :
+    "🔒 BLOQUEADO";
   el.innerHTML =
     `<div class="num">MÓDULO ${m[0]}</div>`+
-    `<div class="state">${m[4]?"🔒":"● ONLINE"}</div>`+
+    `<div class="state">${stateLabel}</div>`+
     `<h3>${m[1]}</h3><p>${m[2]}</p>`+
-    (m[4] ? "" : `<button onclick="location.href='${m[3]}'">▶ ENTRAR</button>`);
+    (state==="locked" ? "" : `<button onclick="location.href='${m[3]}'">▶ ENTRAR</button>`);
   root.appendChild(el);
 });
 </script>
