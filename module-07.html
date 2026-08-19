@@ -119,9 +119,8 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
  </div>
  <div class="terminal">
   <div class="termhead"><b id="termTitle">QUERY CONSOLE // INSERT</b><span>CTRL + ENTER</span></div>
-  <textarea id="editor" class="editor" spellcheck="false">INSERT INTO agentes (nome, funcao, status)
-VALUES ('BIA', 'RASTREADORA', 'PRONTA');</textarea>
-  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">RESTAURAR EXEMPLO</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <textarea id="editor" class="editor" spellcheck="false">-- ETAPA 1: escreva aqui o comando INSERT.</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
   <div class="output" id="output"><span class="info">ETAPA 1: registre o novo agente antes de abrir a escala.</span></div>
  </div>
 </section>
@@ -168,13 +167,9 @@ const hints=[
 let hintIndex=0,stage=1,done=[false,false,false];
 
 const examples={
-1:`INSERT INTO agentes (nome, funcao, status)
-VALUES ('BIA', 'RASTREADORA', 'PRONTA');`,
-2:`UPDATE agentes
-SET status = 'PRONTA'
-WHERE nome = 'NOAH';`,
-3:`DELETE FROM missoes
-WHERE id = 'M-24';`
+1:`-- ETAPA 1: escreva aqui o comando INSERT.`,
+2:`-- ETAPA 2: escreva aqui o comando UPDATE.`,
+3:`-- ETAPA 3: escreva aqui o comando DELETE.`
 };
 
 function normalize(s){return s.toLowerCase().replace(/--.*$/gm,'').replace(/\s+/g,' ').trim()}

@@ -135,13 +135,8 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
  </div>
  <div class="terminal">
   <div class="termhead"><b id="termTitle">QUERY CONSOLE // SUBQUERY</b><span>LAB ACCESS</span></div>
-  <textarea id="editor" class="editor" spellcheck="false">SELECT amostra, carga
-FROM amostras
-WHERE carga > (
-  SELECT AVG(carga)
-  FROM amostras
-);</textarea>
-  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">RESTAURAR EXEMPLO</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <textarea id="editor" class="editor" spellcheck="false">-- ETAPA 1: escreva aqui a consulta com subquery.</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
   <div class="output" id="output"><span class="info">ETAPA 1: encontre as amostras cuja carga está acima da média de todas as amostras.</span></div>
  </div>
 </section>
@@ -189,31 +184,9 @@ const hints=[
  "Depois de criar a CTE, consulte o nome dela como se fosse uma tabela temporária da investigação."
 ];
 const examples={
-1:`SELECT amostra, carga
-FROM amostras
-WHERE carga > (
-  SELECT AVG(carga)
-  FROM amostras
-);`,
-2:`SELECT amostra, carga,
-CASE
-  WHEN carga < 40 THEN 'MONITORAR'
-  WHEN carga < 70 THEN 'ISOLAR'
-  ELSE 'ALERTA'
-END AS risco
-FROM amostras;`,
-3:`WITH classificacao AS (
-  SELECT amostra, carga,
-  CASE
-    WHEN carga < 40 THEN 'MONITORAR'
-    WHEN carga < 70 THEN 'ISOLAR'
-    ELSE 'ALERTA'
-  END AS risco
-  FROM amostras
-)
-SELECT *
-FROM classificacao
-WHERE risco = 'ALERTA';`
+1:`-- ETAPA 1: escreva aqui a consulta com subquery.`,
+2:`-- ETAPA 2: escreva aqui a consulta com CASE WHEN.`,
+3:`-- ETAPA 3: escreva aqui a consulta com WITH (CTE).`
 };
 let stage=1,hintIndex=0,done=[false,false,false];
 

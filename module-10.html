@@ -133,14 +133,8 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
  </div>
  <div class="terminal">
   <div class="termhead"><b id="termTitle">QUERY CONSOLE // DENTRO DA ÁREA</b><span>WORLD DB ACCESS</span></div>
-  <textarea id="editor" class="editor" spellcheck="false">SELECT nome
-FROM pontos_interesse
-WHERE ST_DWithin(
-  localizacao::geography,
-  ST_SetSRID(ST_MakePoint(-51.2300, -30.0300), 4326)::geography,
-  5000
-);</textarea>
-  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">RESTAURAR EXEMPLO</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <textarea id="editor" class="editor" spellcheck="false">-- ETAPA 1: escreva aqui a consulta com ST_DWithin.</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
   <div class="output" id="output"><span class="info">ETAPA 1: encontre os pontos de interesse que estão dentro de um raio de 5 km da posição da central.</span></div>
  </div>
 </section>
@@ -197,25 +191,9 @@ const hints=[
  "ST_Contains responde à pergunta: esta geometria contém aquele ponto?"
 ];
 const examples={
-1:`SELECT nome
-FROM pontos_interesse
-WHERE ST_DWithin(
-  localizacao::geography,
-  ST_SetSRID(ST_MakePoint(-51.2300, -30.0300), 4326)::geography,
-  5000
-);`,
-2:`SELECT nome,
-  ST_Distance(
-    localizacao::geography,
-    ST_SetSRID(ST_MakePoint(-51.2300, -30.0300), 4326)::geography
-  ) AS distancia_m
-FROM pontos_interesse
-ORDER BY distancia_m;`,
-3:`SELECT p.nome, z.nome AS zona, z.prioridade
-FROM pontos_interesse p
-JOIN zonas z
-  ON ST_Contains(z.area, p.localizacao)
-WHERE z.prioridade IN ('ALTA', 'CRÍTICA');`
+1:`-- ETAPA 1: escreva aqui a consulta com ST_DWithin.`,
+2:`-- ETAPA 2: escreva aqui a consulta com ST_Distance.`,
+3:`-- ETAPA 3: escreva aqui a consulta com JOIN e ST_Contains.`
 };
 let stage=1,hintIndex=0,done=[false,false,false];
 

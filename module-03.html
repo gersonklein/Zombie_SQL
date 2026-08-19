@@ -49,13 +49,7 @@ button,textarea{font:inherit}button{cursor:pointer}.shell{width:min(1400px,calc(
 </tbody></table></div></section>
 
 <section class="panel"><div class="title"><strong>TERMINAL // LOGÍSTICA</strong><span>consulta autorizada</span></div><div class="terminal"><div class="termhead"><b>QUERY CONSOLE</b><span>CTRL + ENTER</span></div>
-<textarea id="editor" class="editor" spellcheck="false">SELECT
-  SUM(peso_kg) AS total_kg,
-  COUNT(*) AS lotes,
-  AVG(peso_kg) AS media_kg,
-  MIN(peso_kg) AS menor_lote,
-  MAX(peso_kg) AS maior_lote
-FROM suprimentos;</textarea>
+<textarea id="editor" class="editor" spellcheck="false">-- Escreva aqui a consulta SQL.</textarea>
 <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
 <div class="output" id="output"><span class="info">Terminal pronto. Precisamos medir a carga antes da partida.</span></div></div></section>
 </div>
@@ -82,7 +76,7 @@ function runQuery(){
  ['s1','s2','s3','s4'].forEach(x=>{document.getElementById(x).classList.add('done');document.getElementById(x).classList.remove('active')});
  setTimeout(()=>document.getElementById('success').classList.add('show'),450);
 }
-function resetQuery(){document.getElementById('editor').value='';document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua o manifesto passo a passo.</span>'}
+function resetQuery(){document.getElementById('editor').value='-- Escreva aqui a consulta SQL.';document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua o manifesto passo a passo.</span>'}
 function showHint(){document.getElementById('hintBox').classList.add('show');document.getElementById('hintText').textContent=hints[Math.min(hi,hints.length-1)];document.getElementById('hintCount').textContent=Math.min(hi+1,hints.length);if(hi<hints.length-1)hi++}
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
 

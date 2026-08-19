@@ -131,10 +131,7 @@ footer{margin-top:20px;color:#6f8290;text-align:center;font-size:17px}
         <div class="table-title"><strong>TERMINAL // ABRIGOS</strong><span>consulta autorizada</span></div>
         <div class="terminal">
           <div class="term-head"><b>QUERY CONSOLE</b><span>CTRL + ENTER</span></div>
-          <textarea id="editor" class="editor" spellcheck="false">SELECT *
-FROM abrigos
-ORDER BY ocupacao DESC
-LIMIT 2;</textarea>
+          <textarea id="editor" class="editor" spellcheck="false">-- Escreva aqui a consulta SQL.</textarea>
           <div class="term-actions">
             <button class="btn" onclick="runQuery()">EXECUTAR</button>
             <button class="btn secondary" onclick="resetQuery()">LIMPAR</button>
@@ -209,7 +206,9 @@ function runQuery(){
     setTimeout(()=>document.getElementById('success').classList.add('show'),500);
   }else{
     let msg='A consulta ainda não encontrou a ordem necessária.';
-    if(!q.includes('order by')) msg='Você consultou os abrigos, mas ainda não pediu uma ordenação.';
+    if(!q.includes('select')) msg='A consulta precisa começar com SELECT para consultar os dados.';
+    else if(!q.includes('from abrigos')) msg='Indique a tabela abrigos com FROM abrigos.';
+    else if(!q.includes('order by')) msg='Você consultou os abrigos, mas ainda não pediu uma ordenação.';
     else if(!q.includes('ocupacao')) msg='A ordenação precisa usar a coluna ocupacao.';
     else if(!q.includes('desc')) msg='Os abrigos precisam aparecer do maior para o menor. Tente DESC.';
     else if(!q.includes('limit')) msg='Você ordenou os dados, mas ainda precisa limitar o resultado.';
@@ -218,7 +217,7 @@ function runQuery(){
   }
 }
 function resetQuery(){
-  document.getElementById('editor').value='';
+  document.getElementById('editor').value='-- Escreva aqui a consulta SQL.';
   document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua a consulta passo a passo.</span>';
 }
 function showHint(){

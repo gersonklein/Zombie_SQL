@@ -169,13 +169,7 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
  </div>
  <div class="terminal">
   <div class="termhead"><b id="termTitle">QUERY CONSOLE // ETAPA 1</b><span>CTRL + ENTER</span></div>
-  <textarea id="editor" class="editor" spellcheck="false">SELECT
-  pontos.nome,
-  sinais.codigo,
-  sinais.intensidade
-FROM pontos
-LEFT JOIN sinais
-  ON pontos.nome = sinais.ponto;</textarea>
+  <textarea id="editor" class="editor" spellcheck="false">-- ETAPA 1: escreva aqui a consulta com LEFT JOIN.</textarea>
   <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
   <div class="output" id="output"><span class="info">ETAPA 1: preserve todos os pontos do mapa, inclusive os que não possuem sinal.</span></div>
  </div>
@@ -242,24 +236,11 @@ function setStage(n){
  const out=document.getElementById('output');
  if(n===1){
   title.textContent='QUERY CONSOLE // ETAPA 1';
-  editor.value=`SELECT
-  pontos.nome,
-  sinais.codigo,
-  sinais.intensidade
-FROM pontos
-LEFT JOIN sinais
-  ON pontos.nome = sinais.ponto;`;
+  editor.value=`-- ETAPA 1: escreva aqui a consulta com LEFT JOIN.`;
   out.innerHTML='<span class="info">ETAPA 1: preserve todos os pontos do mapa, inclusive os que não possuem sinal.</span>';
  }else{
   title.textContent='QUERY CONSOLE // ETAPA 2';
-  editor.value=`SELECT
-  sinais.codigo,
-  sinais.ponto,
-  sinais.intensidade
-FROM pontos
-RIGHT JOIN sinais
-  ON pontos.nome = sinais.ponto
-WHERE pontos.nome IS NULL;`;
+  editor.value=`-- ETAPA 2: escreva aqui a consulta com RIGHT JOIN.`;
   out.innerHTML='<span class="info">ETAPA 2: preserve todos os sinais e encontre os que não possuem localização.</span>';
  }
 }
@@ -270,10 +251,10 @@ function runQuery(){
 
  if(stage===1){
   const checks=[
-   [/select\\b/,'Comece com SELECT.'],
-   [/from\\s+pontos/,'A consulta deve começar pela tabela pontos.'],
-   [/left\\s+join\\s+sinais/,'Para preservar todos os pontos, use LEFT JOIN sinais.'],
-   [/on\\s+.*pontos\\.nome\\s*=\\s*sinais\\.ponto/,'O relacionamento usa pontos.nome = sinais.ponto.']
+   [/select\b/,'Comece com SELECT.'],
+   [/from\s+pontos/,'A consulta deve começar pela tabela pontos.'],
+   [/left\s+join\s+sinais/,'Para preservar todos os pontos, use LEFT JOIN sinais.'],
+   [/on\s+.*pontos\.nome\s*=\s*sinais\.ponto/,'O relacionamento usa pontos.nome = sinais.ponto.']
   ];
   for(const [r,m] of checks){if(!r.test(q)){out.innerHTML='<span class="err">⚠ '+m+'</span>';return}}
   document.getElementById('resultBody').innerHTML=`
@@ -295,11 +276,11 @@ function runQuery(){
  }
 
  const checks=[
-  [/select\\b/,'Comece com SELECT.'],
-  [/from\\s+pontos/,'A consulta precisa usar pontos como tabela da esquerda.'],
-  [/right\\s+join\\s+sinais/,'Para preservar todos os sinais, use RIGHT JOIN sinais.'],
-  [/on\\s+.*pontos\\.nome\\s*=\\s*sinais\\.ponto/,'O relacionamento usa pontos.nome = sinais.ponto.'],
-  [/where\\s+.*pontos\\.nome\\s+is\\s+null/,'Filtre os sinais sem localização com WHERE pontos.nome IS NULL.']
+  [/select\b/,'Comece com SELECT.'],
+  [/from\s+pontos/,'A consulta precisa usar pontos como tabela da esquerda.'],
+  [/right\s+join\s+sinais/,'Para preservar todos os sinais, use RIGHT JOIN sinais.'],
+  [/on\s+.*pontos\.nome\s*=\s*sinais\.ponto/,'O relacionamento usa pontos.nome = sinais.ponto.'],
+  [/where\s+.*pontos\.nome\s+is\s+null/,'Filtre os sinais sem localização com WHERE pontos.nome IS NULL.']
  ];
  for(const [r,m] of checks){if(!r.test(q)){out.innerHTML='<span class="err">⚠ '+m+'</span>';return}}
  if(!stage1Done){out.innerHTML='<span class="err">⚠ Complete a ETAPA 1 antes de investigar os sinais sem localização.</span>';return}

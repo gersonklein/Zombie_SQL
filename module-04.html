@@ -210,12 +210,7 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
   <div class="title"><strong>TERMINAL // TRIAGEM</strong><span>consulta autorizada</span></div>
   <div class="terminal">
     <div class="termhead"><b>QUERY CONSOLE</b><span>CTRL + ENTER</span></div>
-    <textarea id="editor" class="editor" spellcheck="false">SELECT
-  setor,
-  COUNT(*) AS pacientes
-FROM pacientes
-GROUP BY setor
-HAVING COUNT(*) >= 5;</textarea>
+    <textarea id="editor" class="editor" spellcheck="false">-- Escreva aqui a consulta SQL.</textarea>
     <div class="actions">
       <button class="btn" onclick="runQuery()">EXECUTAR</button>
       <button class="btn alt" onclick="resetQuery()">LIMPAR</button>
@@ -278,13 +273,13 @@ function runQuery(){
   const out=document.getElementById('output');
 
   const checks=[
-    [/select\\b/,'Comece com SELECT: precisamos pedir os dados que serão exibidos.'],
+    [/select\b/,'Comece com SELECT: precisamos pedir os dados que serão exibidos.'],
     [/setor/,'A consulta precisa trabalhar com a coluna setor.'],
-    [/count\\s*\\(\\s*\\*\\s*\\)/,'Use COUNT(*) para contar pacientes.'],
-    [/from\\s+pacientes/,'A tabela da triagem é pacientes. Use FROM pacientes.'],
-    [/group\\s+by\\s+setor/,'Precisamos agrupar os registros por setor usando GROUP BY setor.'],
+    [/count\s*\(\s*\*\s*\)/,'Use COUNT(*) para contar pacientes.'],
+    [/from\s+pacientes/,'A tabela da triagem é pacientes. Use FROM pacientes.'],
+    [/group\s+by\s+setor/,'Precisamos agrupar os registros por setor usando GROUP BY setor.'],
     [/having/,'O filtro deve acontecer sobre os grupos. Use HAVING.'],
-    [/having\\s+count\\s*\\(\\s*\\*\\s*\\)\\s*>=\\s*5/,'O limite da missão é 5 pacientes por setor. Use HAVING COUNT(*) >= 5.']
+    [/having\s+count\s*\(\s*\*\s*\)\s*>=\s*5/,'O limite da missão é 5 pacientes por setor. Use HAVING COUNT(*) >= 5.']
   ];
 
   for(const [regex,msg] of checks){
@@ -311,7 +306,7 @@ function runQuery(){
 }
 
 function resetQuery(){
-  document.getElementById('editor').value='';
+  document.getElementById('editor').value='-- Escreva aqui a consulta SQL.';
   document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua a consulta de triagem.</span>';
 }
 

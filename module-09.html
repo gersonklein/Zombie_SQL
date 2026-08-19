@@ -132,11 +132,8 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
  </div>
  <div class="terminal">
   <div class="termhead"><b id="termTitle">QUERY CONSOLE // DATAS</b><span>WAR ROOM ACCESS</span></div>
-  <textarea id="editor" class="editor" spellcheck="false">SELECT id, zona, evento, registrado_em
-FROM relatorios
-WHERE registrado_em >= TIMESTAMP '2026-08-19 21:00:00'
-ORDER BY registrado_em DESC;</textarea>
-  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">RESTAURAR EXEMPLO</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <textarea id="editor" class="editor" spellcheck="false">-- ETAPA 1: escreva aqui a consulta com filtro de data.</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
   <div class="output" id="output"><span class="info">ETAPA 1: mostre apenas os relatórios registrados a partir das 21:00 e coloque o mais recente primeiro.</span></div>
  </div>
 </section>
@@ -188,20 +185,9 @@ const hints=[
  "ORDER BY nivel DESC dentro da janela coloca a ameaça mais intensa em primeiro lugar."
 ];
 const examples={
-1:`SELECT id, zona, evento, registrado_em
-FROM relatorios
-WHERE registrado_em >= TIMESTAMP '2026-08-19 21:00:00'
-ORDER BY registrado_em DESC;`,
-2:`SELECT id, zona, evento,
-TIMESTAMP '2026-08-19 22:00:00' - registrado_em AS tempo_decorrido
-FROM relatorios
-WHERE registrado_em >= TIMESTAMP '2026-08-19 21:00:00';`,
-3:`SELECT id, zona, ameaca, nivel,
-ROW_NUMBER() OVER (
-  PARTITION BY zona
-  ORDER BY nivel DESC
-) AS prioridade
-FROM ameacas;`
+1:`-- ETAPA 1: escreva aqui a consulta com filtro de data.`,
+2:`-- ETAPA 2: escreva aqui a consulta com o intervalo de tempo.`,
+3:`-- ETAPA 3: escreva aqui a consulta com ROW_NUMBER() OVER (...).`
 };
 let stage=1,hintIndex=0,done=[false,false,false];
 

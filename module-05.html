@@ -167,15 +167,7 @@ footer{text-align:center;color:#6f8290;margin-top:20px}
  <div class="title"><strong>TERMINAL // ESCUTA</strong><span>cruzamento autorizado</span></div>
  <div class="terminal">
   <div class="termhead"><b>QUERY CONSOLE</b><span>CTRL + ENTER</span></div>
-  <textarea id="editor" class="editor" spellcheck="false">SELECT
-  sobreviventes.nome,
-  sobreviventes.abrigo,
-  transmissoes.codigo,
-  transmissoes.canal
-FROM sobreviventes
-JOIN transmissoes
-  ON sobreviventes.codigo = transmissoes.codigo
-WHERE transmissoes.codigo = 'RX-204';</textarea>
+  <textarea id="editor" class="editor" spellcheck="false">-- Escreva aqui a consulta SQL.</textarea>
   <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
   <div class="output" id="output"><span class="info">Terminal pronto. Qual identidade está escondida por trás do sinal RX-204?</span></div>
  </div>
@@ -205,7 +197,7 @@ WHERE transmissoes.codigo = 'RX-204';</textarea>
   <h2>SINAL IDENTIFICADO</h2>
   <p>A transmissão RX-204 pertence a MAYA, do abrigo NORTE. A equipe agora sabe onde concentrar a busca.</p>
   <div class="reward">+400 XP // NOVA PISTA DESBLOQUEADA</div><br>
-  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+  <button class="btn" onclick="continueCampaign()">▶ CONTINUAR CAMPANHA</button>
  </div>
 </div>
 
@@ -228,11 +220,11 @@ function runQuery(){
  const q=normalize(document.getElementById('editor').value);
  const out=document.getElementById('output');
  const checks=[
-  [/select\\b/,'Comece com SELECT: precisamos escolher as informações da investigação.'],
+  [/select\b/,'Comece com SELECT: precisamos escolher as informações da investigação.'],
   [/sobreviventes/,'A primeira fonte da investigação é sobreviventes.'],
   [/transmissoes/,'A segunda fonte da investigação é transmissoes.'],
-  [/join\\s+transmissoes/,'Use JOIN para cruzar o cadastro com as transmissões.'],
-  [/on\\s+.*sobreviventes\\.codigo\\s*=\\s*transmissoes\\.codigo/,'O cruzamento deve usar a mesma chave: sobreviventes.codigo = transmissoes.codigo.'],
+  [/join\s+transmissoes/,'Use JOIN para cruzar o cadastro com as transmissões.'],
+  [/on\s+.*sobreviventes\.codigo\s*=\s*transmissoes\.codigo/,'O cruzamento deve usar a mesma chave: sobreviventes.codigo = transmissoes.codigo.'],
   [/where/,'Use WHERE para restringir a investigação ao sinal que interessa.'],
   [/rx-204/,'O sinal investigado nesta missão é RX-204.']
  ];
@@ -251,7 +243,7 @@ function runQuery(){
 }
 
 function resetQuery(){
- document.getElementById('editor').value='';
+ document.getElementById('editor').value='-- Escreva aqui a consulta SQL.';
  document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua o cruzamento sem perder o sinal.</span>';
 }
 function showHint(){
@@ -261,6 +253,17 @@ function showHint(){
  if(hintIndex<hints.length-1)hintIndex++;
 }
 function closeSuccess(){document.getElementById('success').classList.remove('show')}
+
+function continueCampaign(){
+ // Persiste a conclusão do Módulo 05 para a progressão da campanha.
+ localStorage.setItem("zombieApocalypse.module05.completed","true");
+ localStorage.setItem("zombieApocalypse.currentModule","06");
+ localStorage.setItem("zombieApocalypse.xp","1450");
+
+ // Retorna à central, onde o Módulo 06 é liberado.
+ window.location.href="index.html#mapa";
+}
+
 document.getElementById('editor').addEventListener('keydown',e=>{
  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}
 });

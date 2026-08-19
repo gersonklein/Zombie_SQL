@@ -316,9 +316,8 @@ tr:hover td{background:#142338}
         </div>
         <div class="terminal">
           <div class="term-head"><b>COMMAND // QUERY-001</b><span id="termState">AGUARDANDO</span></div>
-          <textarea id="editor" class="editor" spellcheck="false" aria-label="Editor de consulta">SELECT *
-FROM sobreviventes
-WHERE abrigo = 'NORTE';</textarea>
+          <textarea id="editor" class="editor" spellcheck="false" aria-label="Editor de consulta">-- Escreva aqui a consulta SQL.
+-- Peça uma dica se não souber por onde começar.</textarea>
           <div class="term-actions">
             <button class="btn" id="runBtn" onclick="runQuery()">▶ EXECUTAR</button>
             <button class="btn secondary" onclick="resetQuery()">↺ REINICIAR</button>
@@ -450,9 +449,8 @@ function runQuery(){
 }
 
 function resetQuery(){
-  document.getElementById("editor").value=`SELECT *
-FROM sobreviventes
-WHERE abrigo = 'NORTE';`;
+  document.getElementById("editor").value=`-- Escreva aqui a consulta SQL.
+-- Peça uma dica se não souber por onde começar.`;
   document.getElementById("output").innerHTML='<span class="info">Consulta reiniciada. Execute quando estiver pronto.</span>';
   document.getElementById("termState").textContent="AGUARDANDO";
   document.getElementById("termState").style.color="";
