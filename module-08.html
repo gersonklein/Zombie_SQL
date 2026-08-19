@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Zombie Apocalypse — Módulo 08: Outbreak Lab — Investigação da Infecção.">
+<title>Zombie Apocalypse — Módulo 08: Outbreak Lab</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{
+ --bg:#040811;--panel:#0b1623;--line:#29465b;--cyan:#38ded4;--green:#9cf34b;
+ --red:#ff405d;--orange:#ffb43d;--yellow:#f1d34d;--cream:#eee3c2;--muted:#8094a2;--shadow:#02050a
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% 0,#17253c,#050a13 48%,#02050b);color:var(--cream);font-family:VT323,monospace;font-size:21px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);background-size:4px 4px}
+button,textarea{font:inherit}button{cursor:pointer}.shell{width:min(1400px,calc(100% - 28px));margin:auto;padding:14px 0 35px}
+.topbar{min-height:64px;border:3px solid var(--line);background:#081220;display:flex;align-items:center;justify-content:space-between;padding:9px 14px;box-shadow:6px 6px var(--shadow);position:sticky;top:8px;z-index:80}
+.brand{font:12px/1.5 "Press Start 2P";color:var(--green)}.brand span{color:var(--cream)}
+.status{display:flex;gap:8px}.badge{border:2px solid var(--line);padding:7px 10px;background:#0d1a2a;color:#b9c9ce;font-size:17px}.online{border-color:#355d43!important;color:var(--green)!important}
+.dot{display:inline-block;width:8px;height:8px;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:5px}
+.breadcrumb{display:flex;justify-content:space-between;margin:18px 0 12px;color:var(--muted)}.breadcrumb b{color:var(--cyan);font-weight:400}
+.hero{position:relative;min-height:465px;border:4px solid #1d3b50;overflow:hidden;background:#07101c;box-shadow:10px 10px var(--shadow)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.9) contrast(1.1)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,7,14,.99),rgba(3,7,14,.88) 34%,rgba(3,7,14,.34) 72%,rgba(3,7,14,.5)),linear-gradient(0deg,rgba(3,7,14,.86),transparent 60%)}
+.hero-content{position:relative;z-index:2;max-width:740px;min-height:465px;padding:44px 42px;display:flex;flex-direction:column;justify-content:center}
+.kicker{font:10px/1.7 "Press Start 2P";color:var(--cyan);margin-bottom:18px}
+h1{font:clamp(25px,4vw,50px)/1.25 "Press Start 2P";margin:0 0 14px;text-shadow:5px 5px #030711}h1 em{color:var(--red);font-style:normal}
+.hero p{font-size:28px;line-height:1.02;max-width:680px;margin:0 0 22px}.hero-tag{display:inline-block;width:max-content;border:2px solid var(--cyan);color:var(--cyan);padding:8px 10px;font:9px "Press Start 2P";background:#07161dcc}
+.layout{display:grid;grid-template-columns:325px 1fr;gap:16px;margin-top:18px}.panel{background:linear-gradient(180deg,#101d2d,#091420);border:3px solid var(--line);padding:18px;box-shadow:6px 6px var(--shadow)}.panel h3{font:11px/1.5 "Press Start 2P";color:var(--green);margin:0 0 15px}
+.mission{background:#fff0c5;color:#152019;border:3px solid #152019;padding:16px;box-shadow:5px 5px var(--orange);margin-bottom:17px}.mission strong{font:9px/1.6 "Press Start 2P";color:#b42b42}.mission p{font-size:23px;line-height:1.05;margin:12px 0 0}
+.objective{border:2px solid #5c4c25;background:#171b18;padding:13px;margin-bottom:15px;color:#e8dcae}.objective b{display:block;color:var(--yellow);font:9px "Press Start 2P";margin-bottom:8px}
+.steps{list-style:none;margin:0;padding:0}.steps li{border-bottom:1px solid #25394c;padding:9px 0;color:#9eb1b9}.steps li.done{color:var(--green)}.steps li.active{color:var(--cream)}.n{display:inline-block;width:26px;color:var(--cyan)}
+.hintbox{margin-top:14px;border:2px solid #5b4a28;background:#171a17;padding:13px;display:none}.hintbox.show{display:block}.hintbox b{font:9px "Press Start 2P";color:var(--yellow)}.hintbox p{margin:9px 0;color:#e0d5ad;line-height:1.05}
+.btn{border:3px solid #07110d;background:var(--green);color:#07110b;padding:11px 13px;box-shadow:4px 4px #426c25;font:9px "Press Start 2P"}.btn.alt{background:#122237;color:var(--cream);border-color:var(--cream);box-shadow:4px 4px #02050a}.btn.hint{background:var(--orange);box-shadow:4px 4px #754e1e}.btn.red{background:var(--red);color:#21060b;box-shadow:4px 4px #711c29}.btn.blue{background:var(--cyan);box-shadow:4px 4px #1b716d}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}.stat{border:2px solid var(--line);background:#091420;padding:10px}.stat b{display:block;font:9px "Press Start 2P";color:var(--cyan);margin-bottom:7px}.stat span{font-size:21px}.progress{height:17px;border:2px solid var(--line);background:#050b14;margin-top:9px}.progress i{display:block;width:25%;height:100%;background:var(--green);transition:.35s}
+.data{display:grid;grid-template-columns:1fr 1fr;gap:16px}.title{display:flex;justify-content:space-between;margin-bottom:12px}.title strong{font:10px "Press Start 2P";color:var(--orange)}.title span{color:var(--muted)}
+.table-wrap{overflow:auto;border:2px solid #263d54;background:#07111d}table{width:100%;border-collapse:collapse;min-width:470px}th,td{padding:10px;border-bottom:1px solid #20354a;text-align:left}th{background:#12253a;color:var(--cyan);font:9px "Press Start 2P"}td{font-size:20px}.ready{color:var(--green)}.alert{color:var(--red)}.wait{color:var(--yellow)}
+.stage{display:flex;gap:8px;margin-bottom:10px}.stage button{flex:1}.stage .selected{outline:3px solid var(--yellow);outline-offset:1px}
+.terminal{border:3px solid #182e43;background:#03070d;box-shadow:inset 0 0 35px #000;min-height:390px}.termhead{padding:10px 12px;border-bottom:2px solid #1d3348;background:#0a1420;display:flex;justify-content:space-between}.termhead b{font:9px "Press Start 2P";color:var(--green)}
+.editor{width:100%;min-height:190px;resize:vertical;border:0;border-bottom:2px solid #173047;outline:0;background:#02060b;color:#b9ff9c;padding:15px;font:23px/1.05 VT323}.actions{display:flex;gap:9px;padding:10px;flex-wrap:wrap}.output{padding:12px;min-height:105px;background:#06101a}.ok{color:var(--green)}.err{color:#ff6b7c}.info{color:var(--cyan)}
+.result{margin-top:16px;border:3px solid var(--line);background:#081321;padding:15px}.result-head{display:flex;justify-content:space-between;margin-bottom:10px}.result strong{font:10px "Press Start 2P";color:var(--cyan)}
+.signal{margin-top:16px;border:3px solid #294d4d;background:#07151b;padding:14px}.signal-head{display:flex;justify-content:space-between;color:var(--green);font:9px "Press Start 2P"}.signal-bar{height:20px;background:#03090f;border:2px solid #234454;margin-top:10px;overflow:hidden}.signal-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--green),var(--red));transition:width 1s}
+.story{margin-top:16px;border:3px solid #294d4d;background:#0b1b24;padding:16px;display:flex;gap:16px}.story b{font:10px "Press Start 2P";color:var(--green)}.story p{margin:9px 0 0;font-size:23px;line-height:1.05}
+.success{position:fixed;inset:0;background:#010409ee;display:none;place-items:center;z-index:120;padding:20px}.success.show{display:grid}.success-card{width:min(760px,100%);border:4px solid var(--green);background:#091522;padding:30px;box-shadow:12px 12px var(--shadow);text-align:center}.success-card h2{font:clamp(20px,3vw,34px)/1.5 "Press Start 2P";color:var(--green);margin:0 0 14px}.success-card p{font-size:27px}.reward{display:inline-block;border:3px solid var(--orange);padding:12px 18px;color:var(--orange);font:10px "Press Start 2P";margin:10px 0 22px}
+footer{text-align:center;color:#6f8290;margin-top:20px}
+@media(max-width:980px){.layout,.data{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.shell{width:calc(100% - 18px)}.topbar{position:relative;top:0}.status{display:none}.hero,.hero-content{min-height:540px}.hero-content{padding:30px 24px}.hero p{font-size:24px}h1{font-size:27px}.stage{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+ <div class="brand">ZOMBIE APOCALYPSE <span>// MODULE 08</span></div>
+ <div class="status"><span class="badge online"><i class="dot"></i>SISTEMA ONLINE</span><span class="badge">SETOR: OUTBREAK LAB</span></div>
+</header>
+
+<div class="breadcrumb"><span>BASE CENTRAL / <b>OUTBREAK LAB</b></span><span>FASE 08 / INVESTIGAÇÃO</span></div>
+
+<section class="hero">
+ <img src="assets/Fase8.png" alt="Laboratório improvisado onde sobreviventes analisam amostras de uma infecção misteriosa">
+ <div class="hero-content">
+  <div class="kicker">ZOMBIE OUTBREAK LAB // INVESTIGAÇÃO</div>
+  <h1>EXISTE UM PADRÃO <em>NA INFECÇÃO.</em></h1>
+  <p>As amostras do laboratório não contam a mesma história. Algumas estão acima do comportamento esperado, outras mudam de categoria conforme a carga viral e outras precisam ser reunidas antes que a equipe consiga comparar os resultados.</p>
+  <span class="hero-tag">MISSÃO 08 — ENCONTRAR O PADRÃO</span>
+ </div>
+</section>
+
+<div class="layout">
+<aside>
+<section class="panel">
+ <div class="mission"><strong>MISSÃO ATIVA</strong><p>A equipe encontrou amostras com níveis diferentes de carga viral. Descubra quais estão acima da média, classifique o risco e reúna as evidências em uma única investigação.</p></div>
+ <div class="objective"><b>OBJETIVO PRINCIPAL</b>Resolver três etapas de investigação: comparar uma amostra com um valor calculado, transformar números em categorias e organizar uma consulta em etapas nomeadas.</div>
+ <h3>PROTOCOLO DO LABORATÓRIO</h3>
+ <ul class="steps">
+  <li class="active" id="s1"><span class="n">01</span> Comparar com a média</li>
+  <li id="s2"><span class="n">02</span> Classificar o risco</li>
+  <li id="s3"><span class="n">03</span> Organizar evidências</li>
+  <li id="s4"><span class="n">04</span> Confirmar o padrão</li>
+ </ul>
+</section>
+<section class="panel" style="margin-top:16px">
+ <h3>PROTOCOLO DE APOIO</h3>
+ <p style="color:#aebdc1;line-height:1.05">Peça quantas dicas precisar. A central não penaliza tentativas.</p>
+ <button class="btn hint" onclick="showHint()">PEDIR DICA</button>
+ <div class="hintbox" id="hintBox"><b>DICA <span id="hintCount">1</span>/12</b><p id="hintText"></p></div>
+</section>
+</aside>
+
+<main>
+<div class="hud">
+ <div class="stat"><b>XP</b><span id="xp">2200</span></div>
+ <div class="stat"><b>FASE</b><span>08 / 10</span></div>
+ <div class="stat"><b>AMOSTRAS</b><span>08</span></div>
+ <div class="stat"><b>PROGRESSO</b><span id="pct">25%</span><div class="progress"><i id="bar"></i></div></div>
+</div>
+
+<div class="data">
+<section class="panel">
+ <div class="title"><strong>AMOSTRAS // CARGA VIRAL</strong><span>leituras recentes</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>ID</th><th>AMOSTRA</th><th>CARGA</th><th>ORIGEM</th></tr></thead>
+ <tbody>
+  <tr><td>A-01</td><td>ALFA</td><td>42</td><td>NORTE</td></tr>
+  <tr><td>A-02</td><td>BRAVO</td><td>67</td><td>NORTE</td></tr>
+  <tr><td>A-03</td><td>CHARLIE</td><td>31</td><td>SUL</td></tr>
+  <tr><td>A-04</td><td>DELTA</td><td>89</td><td>LESTE</td></tr>
+  <tr><td>A-05</td><td>ECHO</td><td>54</td><td>OESTE</td></tr>
+  <tr><td>A-06</td><td>FOXTROT</td><td>73</td><td>CENTRO</td></tr>
+  <tr><td>A-07</td><td>GOLF</td><td>28</td><td>PORTO</td></tr>
+  <tr><td>A-08</td><td>HOTEL</td><td>61</td><td>LESTE</td></tr>
+ </tbody></table></div>
+</section>
+
+<section class="panel">
+ <div class="title"><strong>PROTOCOLO // RISCO</strong><span>limites da equipe</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>FAIXA</th><th>CARGA</th><th>LEITURA</th></tr></thead>
+ <tbody>
+  <tr><td>VERDE</td><td>&lt; 40</td><td class="ready">MONITORAR</td></tr>
+  <tr><td>AMARELO</td><td>40–69</td><td class="wait">ISOLAR</td></tr>
+  <tr><td>VERMELHO</td><td>&ge; 70</td><td class="alert">ALERTA</td></tr>
+ </tbody></table></div>
+ <div class="signal"><div class="signal-head"><span>ANÁLISE DA CENTRAL</span><span id="signalText">AGUARDANDO</span></div><div class="signal-bar"><i id="signalBar"></i></div></div>
+</section>
+</div>
+
+<section class="panel" style="margin-top:16px">
+ <div class="title"><strong>TERMINAL // INVESTIGAÇÃO</strong><span>CTRL + ENTER</span></div>
+ <div class="stage">
+  <button id="stage1" class="btn blue selected" onclick="setStage(1)">01 // SUBQUERY</button>
+  <button id="stage2" class="btn alt" onclick="setStage(2)">02 // CASE</button>
+  <button id="stage3" class="btn alt" onclick="setStage(3)">03 // CTE</button>
+ </div>
+ <div class="terminal">
+  <div class="termhead"><b id="termTitle">QUERY CONSOLE // SUBQUERY</b><span>LAB ACCESS</span></div>
+  <textarea id="editor" class="editor" spellcheck="false">SELECT amostra, carga
+FROM amostras
+WHERE carga > (
+  SELECT AVG(carga)
+  FROM amostras
+);</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">RESTAURAR EXEMPLO</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <div class="output" id="output"><span class="info">ETAPA 1: encontre as amostras cuja carga está acima da média de todas as amostras.</span></div>
+ </div>
+</section>
+
+<section class="result">
+ <div class="result-head"><strong>SAÍDA // EVIDÊNCIAS</strong><span id="resultStatus">aguardando análise</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>AMOSTRA</th><th>CARGA</th><th>RISCO</th><th>LEITURA</th></tr></thead>
+ <tbody id="resultBody"><tr><td colspan="4" style="color:#70828d">Nenhuma evidência confirmada.</td></tr></tbody>
+ </table></div>
+</section>
+
+<section class="story">
+ <div style="font-size:38px">🧬</div>
+ <div><b>REGISTRO DO LABORATÓRIO</b><p>O padrão não apareceu em uma única leitura. A equipe precisou calcular uma referência, transformar números em decisões e organizar o raciocínio em etapas antes de enxergar a assinatura da infecção.</p></div>
+</section>
+</main>
+</div>
+
+<footer>ZOMBIE OUTBREAK LAB // MÓDULO 08 // INVESTIGAÇÃO DA INFECÇÃO</footer>
+</div>
+
+<div class="success" id="success">
+ <div class="success-card">
+  <h2>PADRÃO CONFIRMADO</h2>
+  <p>As evidências foram comparadas, classificadas e reunidas. A equipe encontrou um padrão consistente na infecção e pode entregar o relatório à sala de comando.</p>
+  <div class="reward">+600 XP // EVIDÊNCIA DESCOBERTA</div><br>
+  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+ </div>
+</div>
+
+<script>
+const hints=[
+ "A primeira investigação precisa comparar uma linha com um valor calculado.",
+ "O valor de referência é a média de todas as cargas.",
+ "Uma consulta pode ficar dentro de outra consulta: isso é uma subquery.",
+ "A subquery da média pode ficar dentro do WHERE.",
+ "Use AVG(carga) para calcular a média.",
+ "A segunda etapa precisa transformar números em categorias.",
+ "CASE WHEN funciona como uma regra: quando a condição for verdadeira, produza um resultado.",
+ "A classificação usa três faixas: abaixo de 40, de 40 a 69 e 70 ou mais.",
+ "CASE pode ter vários WHENs em sequência.",
+ "Na terceira etapa, dê um nome a uma etapa intermediária com WITH nome AS (...).",
+ "Uma CTE começa com WITH e depois apresenta a consulta principal.",
+ "Depois de criar a CTE, consulte o nome dela como se fosse uma tabela temporária da investigação."
+];
+const examples={
+1:`SELECT amostra, carga
+FROM amostras
+WHERE carga > (
+  SELECT AVG(carga)
+  FROM amostras
+);`,
+2:`SELECT amostra, carga,
+CASE
+  WHEN carga < 40 THEN 'MONITORAR'
+  WHEN carga < 70 THEN 'ISOLAR'
+  ELSE 'ALERTA'
+END AS risco
+FROM amostras;`,
+3:`WITH classificacao AS (
+  SELECT amostra, carga,
+  CASE
+    WHEN carga < 40 THEN 'MONITORAR'
+    WHEN carga < 70 THEN 'ISOLAR'
+    ELSE 'ALERTA'
+  END AS risco
+  FROM amostras
+)
+SELECT *
+FROM classificacao
+WHERE risco = 'ALERTA';`
+};
+let stage=1,hintIndex=0,done=[false,false,false];
+
+function norm(s){return s.toLowerCase().replace(/--.*$/gm,'').replace(/\s+/g,' ').trim()}
+function setStage(n){
+ stage=n;
+ for(let i=1;i<=3;i++){
+  document.getElementById('stage'+i).classList.toggle('selected',i===n);
+ }
+ document.getElementById('termTitle').textContent='QUERY CONSOLE // '+['','SUBQUERY','CASE','CTE'][n];
+ document.getElementById('editor').value=examples[n];
+ document.getElementById('output').innerHTML='<span class="info">'+[
+  '',
+  'ETAPA 1: encontre as amostras acima da média.',
+  'ETAPA 2: transforme a carga em uma categoria de risco.',
+  'ETAPA 3: organize a classificação em uma CTE e filtre os alertas.'
+ ][n]+'</span>';
+}
+function fail(msg){document.getElementById('output').innerHTML='<span class="err">⚠ '+msg+'</span>'}
+function runQuery(){
+ const q=norm(document.getElementById('editor').value);
+ if(stage===1){
+  if(!/^select\b/.test(q))return fail('Comece com SELECT.');
+  if(!/from\s+amostras/.test(q))return fail('A consulta deve usar a tabela amostras.');
+  if(!/where\s+.*carga\s*>/.test(q))return fail('Compare a carga usando WHERE e o operador >.');
+  if(!/select\s+avg\s*\(\s*carga\s*\)\s+from\s+amostras/.test(q))return fail('A comparação precisa usar uma subquery com AVG(carga) sobre amostras.');
+  done[0]=true;
+  document.getElementById('resultBody').innerHTML=`
+   <tr><td>DELTA</td><td>89</td><td class="alert">ALERTA</td><td>ACIMA DA MÉDIA</td></tr>
+   <tr><td>FOXTROT</td><td>73</td><td class="alert">ALERTA</td><td>ACIMA DA MÉDIA</td></tr>
+   <tr><td>BRAVO</td><td>67</td><td class="wait">ISOLAR</td><td>ACIMA DA MÉDIA</td></tr>
+   <tr><td>HOTEL</td><td>61</td><td class="wait">ISOLAR</td><td>ACIMA DA MÉDIA</td></tr>`;
+  successStage('SUBQUERY VALIDADA. A média calculada pela consulta interna virou a referência da investigação.',1);
+  return;
+ }
+ if(stage===2){
+  if(!/^select\b/.test(q))return fail('Comece com SELECT.');
+  if(!/case\s+when/.test(q))return fail('Use CASE WHEN para criar a regra de classificação.');
+  if(!/carga\s*<\s*40/.test(q))return fail('Inclua a faixa de carga abaixo de 40.');
+  if(!/carga\s*<\s*70/.test(q))return fail('Inclua a faixa intermediária antes do ELSE.');
+  if(!/else/.test(q)||!/end/.test(q))return fail('CASE precisa terminar com ELSE e END.');
+  if(!/alerta/.test(q)||!/isolar/.test(q)||!/monitorar/.test(q))return fail('As três categorias devem aparecer: MONITORAR, ISOLAR e ALERTA.');
+  done[1]=true;
+  document.getElementById('resultBody').innerHTML=`
+   <tr><td>ALFA</td><td>42</td><td class="wait">ISOLAR</td><td>FAIXA AMARELA</td></tr>
+   <tr><td>BRAVO</td><td>67</td><td class="wait">ISOLAR</td><td>FAIXA AMARELA</td></tr>
+   <tr><td>DELTA</td><td>89</td><td class="alert">ALERTA</td><td>FAIXA VERMELHA</td></tr>
+   <tr><td>FOXTROT</td><td>73</td><td class="alert">ALERTA</td><td>FAIXA VERMELHA</td></tr>`;
+  successStage('CASE VALIDADO. A carga viral agora pode ser lida como uma decisão operacional.',2);
+  return;
+ }
+ if(!/^with\s+\w+\s+as\s*\(/.test(q))return fail('A etapa deve começar com WITH nome AS (...).');
+ if(!/select/.test(q)||!/\)\s*select/.test(q))return fail('Depois de fechar a CTE, faça uma nova consulta sobre a etapa nomeada.');
+ if(!/case\s+when/.test(q))return fail('A CTE deve reunir a classificação feita com CASE.');
+ if(!/where\s+risco\s*=\s*['"]?alerta/.test(q))return fail("Filtre a CTE para encontrar risco = 'ALERTA'.");
+ done[2]=true;
+ document.getElementById('resultBody').innerHTML=`
+  <tr><td>DELTA</td><td>89</td><td class="alert">ALERTA</td><td>PADRÃO CONFIRMADO</td></tr>
+  <tr><td>FOXTROT</td><td>73</td><td class="alert">ALERTA</td><td>PADRÃO CONFIRMADO</td></tr>`;
+ successStage('CTE VALIDADA. A investigação foi organizada em etapas e isolou as amostras de maior risco.',3);
+}
+function successStage(msg,n){
+ document.getElementById('output').innerHTML='<span class="ok">✓ '+msg+'</span>';
+ document.getElementById('resultStatus').textContent='etapa '+n+' / 3 confirmada';
+ document.getElementById('resultStatus').style.color='var(--green)';
+ document.getElementById('s'+n).classList.add('done');document.getElementById('s'+n).classList.remove('active');
+ if(n<3)document.getElementById('s'+(n+1)).classList.add('active');
+ const count=done.filter(Boolean).length;
+ document.getElementById('xp').textContent=2200+count*200;
+ document.getElementById('pct').textContent=count===3?'100%':Math.round(count/3*100)+'%';
+ document.getElementById('bar').style.width=(count/3*100)+'%';
+ document.getElementById('signalBar').style.width=(count*33.33)+'%';
+ document.getElementById('signalText').textContent=count===3?'PADRÃO ISOLADO':'ANÁLISE '+count+'/3';
+ if(count===3)setTimeout(()=>document.getElementById('success').classList.add('show'),450);
+}
+function resetQuery(){document.getElementById('editor').value=examples[stage]}
+function showHint(){
+ document.getElementById('hintBox').classList.add('show');
+ document.getElementById('hintText').textContent=hints[Math.min(hintIndex,hints.length-1)];
+ document.getElementById('hintCount').textContent=Math.min(hintIndex+1,hints.length);
+ if(hintIndex<hints.length-1)hintIndex++;
+}
+function closeSuccess(){document.getElementById('success').classList.remove('show')}
+document.getElementById('editor').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}})
+</script>
+</body>
+</html>

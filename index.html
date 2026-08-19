@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Zombie Apocalypse — Central da campanha educativa.">
+<title>Zombie Apocalypse — Central da Campanha</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{
+  --bg:#070b16; --panel:#10192b; --panel2:#16243a; --cream:#f5e9c8;
+  --muted:#9aa9b5; --cyan:#36e0d0; --green:#9cf34a; --red:#ff4d67;
+  --orange:#ffad4d; --line:#30435a; --shadow:#02050a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--cream);font-family:VT323,monospace;font-size:21px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.08;background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);background-size:4px 4px;z-index:20}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+.shell{max-width:1280px;margin:auto;padding:18px}
+.topbar{height:62px;border:3px solid var(--line);background:#0c1322;display:flex;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 5px 0 #02050a;position:sticky;top:10px;z-index:30}
+.brand{font:13px/1.5 "Press Start 2P";color:var(--green);letter-spacing:.2px}
+.brand span{color:var(--cream)}
+.status{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.badge{border:2px solid var(--line);padding:7px 9px;background:#111d2f;color:#b9c7cf;font-size:17px}
+.badge.online{color:var(--green);border-color:#365c42}
+.dot{display:inline-block;width:8px;height:8px;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:6px}
+
+.hero{margin-top:18px;position:relative;min-height:620px;border:4px solid #1c2c46;background:#08101f;overflow:hidden;box-shadow:10px 10px 0 #02050a}
+.hero-art{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(5,9,20,.74) 0%,rgba(5,9,20,.26) 44%,rgba(5,9,20,.12) 100%),url("assets/central-campanha.png");background-size:cover;background-position:center;filter:saturate(.9)}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(transparent,var(--bg));z-index:1}
+.hero-content{position:relative;z-index:2;min-height:620px;padding:54px 44px;display:flex;flex-direction:column;justify-content:flex-end;max-width:800px}
+.kicker{font:11px/1.7 "Press Start 2P";color:var(--cyan);margin-bottom:18px;text-shadow:3px 3px #07111b}
+.hero h1{font:clamp(28px,4.3vw,58px)/1.25 "Press Start 2P";margin:0 0 16px;text-shadow:5px 5px #050912}
+.hero h1 em{color:var(--green);font-style:normal}
+.hero p{font-size:29px;line-height:1.05;max-width:690px;margin:0 0 24px;text-shadow:2px 2px #050912}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.cta{display:inline-flex;align-items:center;justify-content:center;border:3px solid #06100c;background:var(--green);color:#0b1510;padding:15px 18px;box-shadow:5px 5px 0 #3f6c20;font:11px "Press Start 2P";cursor:pointer}
+.cta.secondary{background:#111d2f;color:var(--cream);border-color:var(--cream);box-shadow:5px 5px 0 #02050a}
+.cta:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 #3f6c20}
+.stamp{position:absolute;right:30px;top:28px;z-index:3;border:3px solid var(--red);color:var(--red);padding:10px;font:10px/1.6 "Press Start 2P";transform:rotate(3deg);background:#130c14aa}
+
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:40px 0 15px}
+.section-head h2{font:15px "Press Start 2P";margin:0;color:var(--cream)}
+.section-head small{color:var(--muted);font-size:18px}
+.campaign{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}
+.module{position:relative;min-height:210px;background:var(--panel);border:3px solid var(--line);padding:14px;box-shadow:6px 6px 0 var(--shadow);transition:.12s}
+.module:hover:not(.locked){transform:translateY(-4px);border-color:var(--cyan)}
+.module.active{border-color:var(--green);background:linear-gradient(180deg,#172a2c,#10192b)}
+.module.locked{opacity:.58}
+.module .num{font:10px "Press Start 2P";color:var(--cyan)}
+.module h3{font:12px/1.55 "Press Start 2P";margin:12px 0 7px}
+.module p{margin:0;color:#b8c5ca;line-height:1.0;font-size:20px}
+.module .state{position:absolute;right:12px;top:12px;font-size:17px;color:var(--green)}
+.module button{position:absolute;left:14px;right:14px;bottom:14px;border:2px solid #0a120d;background:var(--green);color:#07110b;padding:10px 7px;font:9px "Press Start 2P";cursor:pointer}
+.module button:disabled{background:#29343c;color:#7f8b91;border-color:#45525a;cursor:not-allowed}
+.module.locked button{display:none}
+
+.command{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.panel{background:var(--panel);border:3px solid var(--line);padding:20px;box-shadow:6px 6px 0 var(--shadow)}
+.panel h3{font:12px "Press Start 2P";margin:0 0 17px;color:var(--cyan)}
+.mission{background:#fff2c9;color:#172019;border:3px solid #172019;padding:15px;box-shadow:5px 5px 0 var(--green);margin-bottom:15px}
+.mission strong{font:10px "Press Start 2P";color:#b52d43}
+.progress{height:22px;border:2px solid var(--line);background:#07101b;margin:9px 0}
+.progress i{display:block;width:8%;height:100%;background:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{border:2px solid var(--line);padding:10px;background:#0c1423}.stat b{display:block;font:11px "Press Start 2P";color:var(--green);margin-bottom:7px}.stat span{color:var(--muted)}
+.protocol div{padding:8px 0;border-bottom:1px solid #27384d}.protocol div:last-child{border:0}.ok{color:var(--green)}.warn{color:var(--orange)}
+
+.footer{margin:35px 0 10px;border-top:2px solid var(--line);padding-top:15px;color:#6f7f89;font-size:17px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+
+.toast{position:fixed;right:20px;bottom:20px;z-index:50;background:#0e1b2b;border:3px solid var(--green);padding:15px 17px;box-shadow:6px 6px 0 #02050a;display:none;max-width:390px}
+.toast.show{display:block;animation:in .18s ease-out}@keyframes in{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+
+@media(max-width:1000px){.campaign{grid-template-columns:repeat(2,1fr)}.command{grid-template-columns:1fr}.hero{min-height:570px}.hero-content{min-height:570px}}
+@media(max-width:600px){.shell{padding:10px}.topbar{position:static;height:auto;align-items:flex-start}.status{display:none}.hero{min-height:600px}.hero-content{min-height:600px;padding:28px 20px}.stamp{right:14px;top:14px}.campaign{grid-template-columns:1fr}.hero p{font-size:25px}.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <a class="brand" href="index.html">ZOMBIE<br><span>APOCALYPSE DB</span></a>
+  <div class="status">
+    <div class="badge online"><span class="dot"></span>DATABASE ONLINE</div>
+    <div class="badge">DAY 01</div>
+    <div class="badge">XP 000</div>
+  </div>
+</header>
+
+<section class="hero" aria-label="Central da campanha">
+  <div class="hero-art" aria-hidden="true"></div>
+  <div class="hero-content">
+    <div class="kicker">◆ CENTRAL DE COMANDO // REDE DE SOBREVIVENTES</div>
+    <h1>ERRO CRÍTICO:<br><em>ZONA MORTA</em></h1>
+    <p>O mundo acabou. A cidade entrou em silêncio. Encontre sobreviventes, administre recursos e reconstrua o que restou.</p>
+    <div class="cta-row">
+      <a class="cta" href="module-01.html">▶ INICIAR CAMPANHA</a>
+      <a class="cta secondary" href="#mapa">VER MAPA DA CAMPANHA</a>
+    </div>
+  </div>
+</section>
+
+<section id="mapa">
+  <div class="section-head">
+    <h2>MAPA DA CAMPANHA</h2>
+    <small>10 módulos · uma única história · uma missão de sobrevivência</small>
+  </div>
+  <div class="campaign" id="modules"></div>
+</section>
+
+<div class="section-head"><h2>CENTRAL DE COMANDO</h2><small>STATUS DA OPERAÇÃO</small></div>
+<section class="command">
+  <div class="panel">
+    <h3>◆ MISSÃO ATUAL</h3>
+    <div class="mission"><strong>MÓDULO 01 — O PRIMEIRO ABRIGO</strong><br><br>Três sobreviventes desapareceram do rádio. Consulte o banco e descubra quem está no abrigo NORTE.</div>
+    <div>PROGRESSO DA CAMPANHA</div>
+    <div class="progress"><i></i></div>
+    <div class="stats">
+      <div class="stat"><b>01 / 10</b><span>Módulo atual</span></div>
+      <div class="stat"><b>000</b><span>XP acumulado</span></div>
+      <div class="stat"><b>0%</b><span>Campanha</span></div>
+    </div>
+  </div>
+
+</section>
+
+<footer class="footer">
+  <span>ZOMBIE APOCALYPSE DB · CAMPAIGN BUILD 01</span>
+  <span>HTML ESTÁTICO · GITHUB PAGES READY</span>
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const modules = [
+  ["01","O PRIMEIRO ABRIGO","Sobreviver","module-01.html",false],
+  ["02","LAST SHELTER","Abrigos","module-02.html",true],
+  ["03","SUPPLY RUN","Recursos","module-03.html",true],
+  ["04","ZOMBIE HOSPITAL","Triagem","module-04.html",true],
+  ["05","ZOMBIE RADIO","Investigação","module-05.html",true],
+  ["06","ZOMBIE RADAR","Mapa","module-06.html",true],
+  ["07","HUNTER HQ","Equipes","module-07.html",true],
+  ["08","OUTBREAK LAB","Infecção","module-08.html",true],
+  ["09","WAR ROOM","Comando","module-09.html",true],
+  ["10","WORLD DB","Reconstrução","module-10.html",true]
+];
+const root=document.getElementById("modules");
+modules.forEach(m=>{
+  const el=document.createElement("article");
+  el.className="module "+(m[0]==="01"?"active ":"")+(m[4]?"locked":"");
+  el.innerHTML =
+    `<div class="num">MÓDULO ${m[0]}</div>`+
+    `<div class="state">${m[4]?"🔒":"● ONLINE"}</div>`+
+    `<h3>${m[1]}</h3><p>${m[2]}</p>`+
+    (m[4] ? "" : `<button onclick="location.href='${m[3]}'">▶ ENTRAR</button>`);
+  root.appendChild(el);
+});
+</script>
+</body>
+</html>

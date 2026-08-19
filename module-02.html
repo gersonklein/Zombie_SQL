@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Zombie Apocalypse — Módulo 02: Last Shelter — Gestão de Abrigos.">
+<title>Zombie Apocalypse — Módulo 02: Last Shelter</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{
+  --bg:#050913;--bg2:#081321;--panel:#0d1726;--panel2:#111f31;
+  --line:#28425a;--cyan:#35dfd1;--green:#9cf34a;--red:#ff435e;
+  --orange:#ffb33e;--yellow:#f2d14c;--cream:#f3e7c5;--muted:#8296a4;
+  --ink:#06100e;--shadow:#02050a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% 0%,#10233a 0,#050913 45%,#03060d 100%);color:var(--cream);font-family:VT323,monospace;font-size:21px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.075;background-image:linear-gradient(rgba(255,255,255,.65) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.65) 1px,transparent 1px);background-size:4px 4px}
+button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+.shell{width:min(1380px,calc(100% - 28px));margin:auto;padding:14px 0 35px}
+.topbar{min-height:64px;border:3px solid var(--line);background:#091220;display:flex;align-items:center;justify-content:space-between;padding:9px 14px;box-shadow:6px 6px 0 var(--shadow);position:sticky;top:8px;z-index:80}
+.brand{font:12px/1.55 "Press Start 2P";color:var(--green)}.brand span{color:var(--cream)}
+.status{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.badge{border:2px solid var(--line);padding:7px 10px;background:#0e1a2b;color:#b8c8cf;font-size:17px}.badge.online{border-color:#365d42;color:var(--green)}.dot{display:inline-block;width:8px;height:8px;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:5px}
+.breadcrumb{display:flex;justify-content:space-between;gap:12px;margin:18px 0 12px;color:var(--muted);font-size:18px}.breadcrumb b{color:var(--cyan);font-weight:400}
+.hero{position:relative;min-height:430px;border:4px solid #1d3550;overflow:hidden;background:#07101d;box-shadow:10px 10px 0 var(--shadow)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.88) contrast(1.05)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,8,16,.97) 0%,rgba(4,8,16,.82) 36%,rgba(4,8,16,.26) 70%,rgba(4,8,16,.38)),linear-gradient(0deg,rgba(4,8,16,.78),transparent 58%)}
+.hero-content{position:relative;z-index:2;max-width:680px;padding:45px 42px 38px;min-height:430px;display:flex;flex-direction:column;justify-content:center}
+.kicker{font:10px/1.7 "Press Start 2P";color:var(--cyan);margin-bottom:18px;text-shadow:3px 3px #030711}
+h1{font:clamp(25px,4vw,52px)/1.25 "Press Start 2P";margin:0 0 14px;text-shadow:5px 5px #030711}h1 em{color:var(--orange);font-style:normal}
+.hero p{font-size:28px;line-height:1.03;max-width:610px;margin:0 0 22px;text-shadow:2px 2px #030711}
+.hero-tag{display:inline-block;width:max-content;border:2px solid var(--cyan);color:var(--cyan);padding:8px 10px;font:9px "Press Start 2P";background:#07161dcc}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:16px;margin-top:18px}
+.panel{background:linear-gradient(180deg,#101d2e,#0a1422);border:3px solid var(--line);padding:18px;box-shadow:6px 6px 0 var(--shadow)}.panel h2,.panel h3{font:11px/1.5 "Press Start 2P";margin:0 0 15px}.panel h2{color:var(--cyan)}.panel h3{color:var(--green)}
+.mission-card{background:#fff0c5;color:#152019;border:3px solid #152019;padding:16px;box-shadow:5px 5px 0 var(--orange);margin-bottom:17px}.mission-card strong{font:9px/1.6 "Press Start 2P";color:#b42b42}.mission-card p{font-size:23px;line-height:1.05;margin:12px 0 0}
+.objective{border:2px solid #5c4c25;background:#171b18;padding:13px;margin-bottom:15px;color:#e8dcae}.objective b{display:block;color:var(--yellow);font:9px "Press Start 2P";margin-bottom:8px}
+.steps{list-style:none;margin:0;padding:0}.steps li{border-bottom:1px solid #25394c;padding:9px 0;color:#a7b8bf}.steps li:last-child{border:0}.steps li.done{color:var(--green)}.steps li.active{color:var(--cream)}.steps .n{display:inline-block;width:26px;color:var(--cyan)}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}.stat{border:2px solid var(--line);background:#0a1422;padding:10px}.stat b{display:block;font:9px "Press Start 2P";color:var(--cyan);margin-bottom:7px}.stat span{font-size:21px;color:var(--cream)}
+.progress{height:17px;border:2px solid var(--line);background:#050b14;margin-top:9px}.progress i{display:block;width:50%;height:100%;background:var(--green);transition:.35s}
+.data-area{display:grid;grid-template-columns:1fr 1fr;gap:16px}.table-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.table-title strong{font:10px "Press Start 2P";color:var(--orange)}.table-title span{color:var(--muted);font-size:17px}
+.table-wrap{overflow:auto;border:2px solid #263d54;background:#07111d}table{width:100%;border-collapse:collapse;min-width:430px}th,td{padding:10px 11px;text-align:left;border-bottom:1px solid #20354a}th{background:#12253a;color:var(--cyan);font:9px "Press Start 2P";position:sticky;top:0}td{color:#d2d9d2;font-size:21px}tr.target{background:#102e2c}tr:hover td{background:#142338}
+.rank{display:inline-block;min-width:26px;color:var(--orange)}.capacity{color:var(--yellow)}
+.terminal{border:3px solid #182e43;background:#03070d;box-shadow:inset 0 0 35px #000;min-height:360px;display:flex;flex-direction:column}.term-head{padding:10px 12px;border-bottom:2px solid #1d3348;background:#0a1420;display:flex;justify-content:space-between;align-items:center}.term-head b{font:9px "Press Start 2P";color:var(--green)}.term-head span{color:var(--muted);font-size:17px}
+.editor{width:100%;min-height:155px;resize:vertical;border:0;border-bottom:2px solid #173047;outline:0;background:#02060b;color:#b9ff9c;padding:15px;font:23px/1.05 "VT323",monospace;caret-color:var(--green)}
+.term-actions{display:flex;gap:9px;flex-wrap:wrap;padding:10px;background:#07101a}.btn{border:3px solid #07110d;background:var(--green);color:#07110b;padding:11px 13px;box-shadow:4px 4px 0 #426c25;font:9px "Press Start 2P"}.btn.secondary{background:#122237;color:var(--cream);border-color:var(--cream);box-shadow:4px 4px 0 #02050a}.btn.hint{background:var(--orange);box-shadow:4px 4px 0 #754e1e}.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 #426c25}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.output{padding:12px;min-height:96px;background:#06101a;color:#a9b6bc}.output .ok{color:var(--green)}.output .err{color:#ff6b7c}.output .info{color:var(--cyan)}
+.hints{margin-top:14px;border:2px solid #5b4a28;background:#171a17;padding:13px;display:none}.hints.show{display:block}.hints b{font:9px "Press Start 2P";color:var(--yellow)}.hints p{margin:9px 0 0;color:#e0d5ad;line-height:1.05}.hint-count{color:var(--orange);font-size:18px}
+.result{margin-top:16px;border:3px solid var(--line);background:#081321;padding:15px}.result-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.result-head strong{font:10px "Press Start 2P";color:var(--cyan)}.result-head span{color:var(--muted);font-size:18px}.result table{min-width:100%}
+.story{margin-top:16px;border:3px solid #294d4d;background:linear-gradient(90deg,#0b1b24,#101a27);padding:16px;display:flex;gap:16px;align-items:flex-start}.story-icon{font-size:38px}.story b{font:10px "Press Start 2P";color:var(--green)}.story p{margin:9px 0 0;font-size:23px;line-height:1.05;color:#c6d1d0}
+.success{position:fixed;inset:0;background:rgba(1,4,9,.93);display:none;place-items:center;z-index:120;padding:20px}.success.show{display:grid}.success-card{width:min(720px,100%);border:4px solid var(--green);background:#091522;padding:30px;box-shadow:12px 12px 0 #02050a;text-align:center}.success-card h2{font:clamp(20px,3vw,34px)/1.5 "Press Start 2P";color:var(--green);margin:0 0 14px}.success-card p{font-size:27px;line-height:1.05;color:#dbe6df}.reward{display:inline-block;border:3px solid var(--orange);padding:12px 18px;color:var(--orange);font:10px "Press Start 2P";margin:10px 0 22px}
+footer{margin-top:20px;color:#6f8290;text-align:center;font-size:17px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.data-area{grid-template-columns:1fr}.hero-content{max-width:650px}.hud{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.shell{width:min(100% - 18px,1380px)}.topbar{position:relative;top:0}.status{display:none}.hero{min-height:500px}.hero-content{padding:30px 24px;min-height:500px}.hero p{font-size:24px}.hud{grid-template-columns:1fr 1fr}.panel{padding:14px}h1{font-size:27px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <div class="brand">ZOMBIE APOCALYPSE <span>// MODULE 02</span></div>
+  <div class="status"><span class="badge online"><i class="dot"></i>SISTEMA ONLINE</span><span class="badge">SETOR: LAST SHELTER</span></div>
+</header>
+
+<div class="breadcrumb"><span>BASE CENTRAL / <b>LAST SHELTER</b></span><span>FASE 02 / GESTÃO</span></div>
+
+<section class="hero">
+  <img src="assets/Fase2.png" alt="Interior de um abrigo subterrâneo dividido em áreas de sobrevivência, logística e armazenamento">
+  <div class="hero-content">
+    <div class="kicker">LAST SHELTER // GESTÃO DE ABRIGOS</div>
+    <h1>OS ABRIGOS ESTÃO <em>LOTADOS.</em></h1>
+    <p>O espaço está acabando. Encontre os abrigos mais lotados antes que a próxima leva de sobreviventes chegue.</p>
+    <span class="hero-tag">MISSÃO 02 — ORDENAR E PRIORIZAR</span>
+  </div>
+</section>
+
+<div class="layout">
+  <aside>
+    <section class="panel">
+      <div class="mission-card">
+        <strong>MISSÃO ATIVA</strong>
+        <p>O rádio informa que novos sobreviventes estão chegando. Precisamos saber quais abrigos estão no limite.</p>
+      </div>
+      <div class="objective">
+        <b>OBJETIVO</b>
+        Encontre os <strong>2 abrigos mais lotados</strong> e mostre-os do maior para o menor número de ocupantes.
+      </div>
+      <h3>ROTEIRO DA MISSÃO</h3>
+      <ul class="steps">
+        <li class="done"><span class="n">01</span> Observar os dados</li>
+        <li class="active"><span class="n">02</span> Ordenar os abrigos</li>
+        <li><span class="n">03</span> Limitar o resultado</li>
+        <li><span class="n">04</span> Decidir onde reforçar</li>
+      </ul>
+    </section>
+    <section class="panel" style="margin-top:16px">
+      <h3>PROTOCOLO DE APOIO</h3>
+      <p style="color:#aebdc1;line-height:1.05;margin:0">Você pode pedir ajuda quantas vezes quiser. As dicas revelam a solução aos poucos.</p>
+      <button class="btn hint" style="margin-top:13px" onclick="showHint()">PEDIR DICA</button>
+      <div class="hints" id="hintBox"><b>DICA <span class="hint-count" id="hintCount">1</span>/6</b><p id="hintText"></p></div>
+    </section>
+  </aside>
+
+  <main>
+    <div class="hud">
+      <div class="stat"><b>XP</b><span id="xp">150</span></div>
+      <div class="stat"><b>FASE</b><span>02 / 10</span></div>
+      <div class="stat"><b>ABRIGOS</b><span>06</span></div>
+      <div class="stat"><b>PROGRESSO</b><span id="pct">50%</span><div class="progress"><i id="bar"></i></div></div>
+    </div>
+
+    <div class="data-area">
+      <section class="panel data-panel">
+        <div class="table-title"><strong>ABRIGOS // STATUS</strong><span>ocupação atual</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>ABRIGO</th><th>OCUPAÇÃO</th><th>CAPACIDADE</th></tr></thead>
+            <tbody>
+              <tr><td>01</td><td>NORTE</td><td class="capacity">86</td><td>120</td></tr>
+              <tr><td>02</td><td>SUL</td><td class="capacity">143</td><td>150</td></tr>
+              <tr><td>03</td><td>LESTE</td><td class="capacity">97</td><td>110</td></tr>
+              <tr><td>04</td><td>OESTE</td><td class="capacity">61</td><td>100</td></tr>
+              <tr><td>05</td><td>CENTRAL</td><td class="capacity">128</td><td>160</td></tr>
+              <tr><td>06</td><td>SUBSOLO</td><td class="capacity">74</td><td>90</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel terminal-panel">
+        <div class="table-title"><strong>TERMINAL // ABRIGOS</strong><span>consulta autorizada</span></div>
+        <div class="terminal">
+          <div class="term-head"><b>QUERY CONSOLE</b><span>CTRL + ENTER</span></div>
+          <textarea id="editor" class="editor" spellcheck="false">SELECT *
+FROM abrigos
+ORDER BY ocupacao DESC
+LIMIT 2;</textarea>
+          <div class="term-actions">
+            <button class="btn" onclick="runQuery()">EXECUTAR</button>
+            <button class="btn secondary" onclick="resetQuery()">LIMPAR</button>
+            <button class="btn hint" onclick="showHint()">DICA</button>
+          </div>
+          <div class="output" id="output"><span class="info">Terminal pronto. Precisamos dos dois abrigos com maior ocupação.</span></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="result">
+      <div class="result-head"><strong>SAÍDA // PREVISÃO</strong><span id="resultStatus">aguardando consulta</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>ABRIGO</th><th>OCUPAÇÃO</th><th>CAPACIDADE</th></tr></thead>
+          <tbody id="resultBody"><tr><td colspan="4" style="color:#70828d">Nenhum resultado confirmado.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="story">
+      <div class="story-icon">🏚️</div>
+      <div><b>REGISTRO DA CENTRAL</b><p>O abrigo não é apenas um lugar. É uma rede de pessoas, espaço e recursos. A ordem dos dados pode revelar onde uma decisão precisa acontecer primeiro.</p></div>
+    </section>
+  </main>
+</div>
+<footer>LAST SHELTER // MÓDULO 02 // SISTEMA DE SOBREVIVÊNCIA</footer>
+</div>
+
+<div class="success" id="success">
+  <div class="success-card">
+    <h2>ABRIGOS PRIORITÁRIOS LOCALIZADOS</h2>
+    <p>Você identificou os dois abrigos mais lotados e ordenou a informação para a equipe de comando.</p>
+    <div class="reward">+250 XP // MISSÃO CONCLUÍDA</div><br>
+    <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+  </div>
+</div>
+
+<script>
+const hints=[
+  "Precisamos colocar os abrigos em uma ordem. Qual parte da consulta faz isso?",
+  "O comando ORDER BY serve para ordenar os resultados.",
+  "Queremos ordenar pela coluna ocupacao.",
+  "Os mais lotados devem aparecer primeiro. DESC faz a ordem decrescente.",
+  "Ainda temos muitos abrigos. LIMIT pode restringir quantas linhas aparecem.",
+  "A consulta completa usa SELECT, FROM, ORDER BY ocupacao DESC e LIMIT 2."
+];
+let hintIndex=0, completed=false;
+
+function normalize(s){
+  return s.toLowerCase().replace(/--.*$/gm,'').replace(/\s+/g,' ').trim();
+}
+function runQuery(){
+  const q=normalize(document.getElementById('editor').value);
+  const out=document.getElementById('output');
+  const ok=/select\s+\*\s+from\s+abrigos\s+order\s+by\s+ocupacao\s+desc\s+limit\s+2\s*;?$/.test(q);
+  if(ok){
+    document.getElementById('resultBody').innerHTML=`
+      <tr class="target"><td><span class="rank">01</span></td><td>SUL</td><td class="capacity">143</td><td>150</td></tr>
+      <tr class="target"><td><span class="rank">02</span></td><td>CENTRAL</td><td class="capacity">128</td><td>160</td></tr>`;
+    document.getElementById('resultStatus').textContent='consulta correta';
+    document.getElementById('resultStatus').style.color='var(--green)';
+    out.innerHTML='<span class="ok">✓ CONSULTA VALIDADA.</span><br>Os dois abrigos mais lotados foram identificados e ordenados corretamente.';
+    completed=true;
+    document.getElementById('xp').textContent='400';
+    document.getElementById('pct').textContent='100%';
+    document.getElementById('bar').style.width='100%';
+    document.querySelectorAll('.steps li')[1].classList.add('done');
+    document.querySelectorAll('.steps li')[1].classList.remove('active');
+    document.querySelectorAll('.steps li')[2].classList.add('done');
+    document.querySelectorAll('.steps li')[3].classList.add('done');
+    setTimeout(()=>document.getElementById('success').classList.add('show'),500);
+  }else{
+    let msg='A consulta ainda não encontrou a ordem necessária.';
+    if(!q.includes('order by')) msg='Você consultou os abrigos, mas ainda não pediu uma ordenação.';
+    else if(!q.includes('ocupacao')) msg='A ordenação precisa usar a coluna ocupacao.';
+    else if(!q.includes('desc')) msg='Os abrigos precisam aparecer do maior para o menor. Tente DESC.';
+    else if(!q.includes('limit')) msg='Você ordenou os dados, mas ainda precisa limitar o resultado.';
+    else if(!q.includes('2')) msg='A missão pede exatamente os dois primeiros resultados.';
+    out.innerHTML='<span class="err">⚠ '+msg+'</span>';
+  }
+}
+function resetQuery(){
+  document.getElementById('editor').value='';
+  document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua a consulta passo a passo.</span>';
+}
+function showHint(){
+  document.getElementById('hintBox').classList.add('show');
+  document.getElementById('hintText').textContent=hints[Math.min(hintIndex,hints.length-1)];
+  document.getElementById('hintCount').textContent=Math.min(hintIndex+1,hints.length);
+  if(hintIndex<hints.length-1) hintIndex++;
+}
+function closeSuccess(){document.getElementById('success').classList.remove('show')}
+document.getElementById('editor').addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}
+});
+</script>
+</body>
+</html>

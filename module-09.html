@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Zombie Apocalypse — Módulo 09: War Room — Comando.">
+<title>Zombie Apocalypse — Módulo 09: War Room</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{--bg:#040811;--panel:#0b1623;--line:#29465b;--cyan:#38ded4;--green:#9cf34b;--red:#ff405d;--orange:#ffb43d;--yellow:#f1d34d;--cream:#eee3c2;--muted:#8094a2;--shadow:#02050a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% 0,#172746,#050a13 48%,#02050b);color:var(--cream);font-family:VT323,monospace;font-size:21px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);background-size:4px 4px}
+button,textarea{font:inherit}button{cursor:pointer}.shell{width:min(1400px,calc(100% - 28px));margin:auto;padding:14px 0 35px}
+.topbar{min-height:64px;border:3px solid var(--line);background:#081220;display:flex;align-items:center;justify-content:space-between;padding:9px 14px;box-shadow:6px 6px var(--shadow);position:sticky;top:8px;z-index:80}
+.brand{font:12px/1.5 "Press Start 2P";color:var(--green)}.brand span{color:var(--cream)}.status{display:flex;gap:8px}.badge{border:2px solid var(--line);padding:7px 10px;background:#0d1a2a;color:#b9c9ce;font-size:17px}.online{border-color:#355d43!important;color:var(--green)!important}.dot{display:inline-block;width:8px;height:8px;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:5px}
+.breadcrumb{display:flex;justify-content:space-between;margin:18px 0 12px;color:var(--muted)}.breadcrumb b{color:var(--cyan);font-weight:400}
+.hero{position:relative;min-height:470px;border:4px solid #1d3b50;overflow:hidden;background:#07101c;box-shadow:10px 10px var(--shadow)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.92) contrast(1.08)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,7,14,.99),rgba(3,7,14,.87) 34%,rgba(3,7,14,.32) 72%,rgba(3,7,14,.48)),linear-gradient(0deg,rgba(3,7,14,.86),transparent 60%)}
+.hero-content{position:relative;z-index:2;max-width:740px;min-height:470px;padding:44px 42px;display:flex;flex-direction:column;justify-content:center}
+.kicker{font:10px/1.7 "Press Start 2P";color:var(--cyan);margin-bottom:18px}
+h1{font:clamp(25px,4vw,50px)/1.25 "Press Start 2P";margin:0 0 14px;text-shadow:5px 5px #030711}h1 em{color:var(--red);font-style:normal}
+.hero p{font-size:28px;line-height:1.02;max-width:680px;margin:0 0 22px}.hero-tag{display:inline-block;width:max-content;border:2px solid var(--cyan);color:var(--cyan);padding:8px 10px;font:9px "Press Start 2P";background:#07161dcc}
+.layout{display:grid;grid-template-columns:325px 1fr;gap:16px;margin-top:18px}.panel{background:linear-gradient(180deg,#101d2d,#091420);border:3px solid var(--line);padding:18px;box-shadow:6px 6px var(--shadow)}.panel h3{font:11px/1.5 "Press Start 2P";color:var(--green);margin:0 0 15px}
+.mission{background:#fff0c5;color:#152019;border:3px solid #152019;padding:16px;box-shadow:5px 5px var(--orange);margin-bottom:17px}.mission strong{font:9px/1.6 "Press Start 2P";color:#b42b42}.mission p{font-size:23px;line-height:1.05;margin:12px 0 0}
+.objective{border:2px solid #5c4c25;background:#171b18;padding:13px;margin-bottom:15px;color:#e8dcae}.objective b{display:block;color:var(--yellow);font:9px "Press Start 2P";margin-bottom:8px}
+.steps{list-style:none;margin:0;padding:0}.steps li{border-bottom:1px solid #25394c;padding:9px 0;color:#9eb1b9}.steps li.done{color:var(--green)}.steps li.active{color:var(--cream)}.n{display:inline-block;width:26px;color:var(--cyan)}
+.hintbox{margin-top:14px;border:2px solid #5b4a28;background:#171a17;padding:13px;display:none}.hintbox.show{display:block}.hintbox b{font:9px "Press Start 2P";color:var(--yellow)}.hintbox p{margin:9px 0;color:#e0d5ad;line-height:1.05}
+.btn{border:3px solid #07110d;background:var(--green);color:#07110b;padding:11px 13px;box-shadow:4px 4px #426c25;font:9px "Press Start 2P"}.btn.alt{background:#122237;color:var(--cream);border-color:var(--cream);box-shadow:4px 4px #02050a}.btn.hint{background:var(--orange);box-shadow:4px 4px #754e1e}.btn.blue{background:var(--cyan);box-shadow:4px 4px #1b716d}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}.stat{border:2px solid var(--line);background:#091420;padding:10px}.stat b{display:block;font:9px "Press Start 2P";color:var(--cyan);margin-bottom:7px}.stat span{font-size:21px}.progress{height:17px;border:2px solid var(--line);background:#050b14;margin-top:9px}.progress i{display:block;width:25%;height:100%;background:var(--green);transition:.35s}
+.data{display:grid;grid-template-columns:1fr 1fr;gap:16px}.title{display:flex;justify-content:space-between;margin-bottom:12px}.title strong{font:10px "Press Start 2P";color:var(--orange)}.title span{color:var(--muted)}
+.table-wrap{overflow:auto;border:2px solid #263d54;background:#07111d}table{width:100%;border-collapse:collapse;min-width:470px}th,td{padding:10px;border-bottom:1px solid #20354a;text-align:left}th{background:#12253a;color:var(--cyan);font:9px "Press Start 2P"}td{font-size:20px}.ready{color:var(--green)}.alert{color:var(--red)}.wait{color:var(--yellow)}
+.stage{display:flex;gap:8px;margin-bottom:10px}.stage button{flex:1}.stage .selected{outline:3px solid var(--yellow);outline-offset:1px}
+.terminal{border:3px solid #182e43;background:#03070d;box-shadow:inset 0 0 35px #000;min-height:395px}.termhead{padding:10px 12px;border-bottom:2px solid #1d3348;background:#0a1420;display:flex;justify-content:space-between}.termhead b{font:9px "Press Start 2P";color:var(--green)}
+.editor{width:100%;min-height:195px;resize:vertical;border:0;border-bottom:2px solid #173047;outline:0;background:#02060b;color:#b9ff9c;padding:15px;font:23px/1.05 VT323}.actions{display:flex;gap:9px;padding:10px;flex-wrap:wrap}.output{padding:12px;min-height:105px;background:#06101a}.ok{color:var(--green)}.err{color:#ff6b7c}.info{color:var(--cyan)}
+.result{margin-top:16px;border:3px solid var(--line);background:#081321;padding:15px}.result-head{display:flex;justify-content:space-between;margin-bottom:10px}.result strong{font:10px "Press Start 2P";color:var(--cyan)}
+.command-map{margin-top:16px;border:3px solid #24485a;background:#06111b;min-height:240px;position:relative;overflow:hidden}.command-map:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(56,222,212,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(56,222,212,.07) 1px,transparent 1px);background-size:34px 34px}
+.zone{position:absolute;border:2px solid var(--cyan);background:#09202acc;padding:7px 10px;color:var(--cyan);font:8px "Press Start 2P";box-shadow:0 0 12px #38ded455}.zone.alert{border-color:var(--red);color:var(--red)}.zone.z1{left:12%;top:24%}.zone.z2{left:43%;top:14%}.zone.z3{right:12%;top:30%}.zone.z4{left:31%;bottom:17%}.zone.z5{right:25%;bottom:14%}
+.pulse{position:absolute;width:18px;height:18px;border:2px solid var(--red);border-radius:50%;box-shadow:0 0 15px var(--red);animation:pulse 1.7s infinite}.p1{left:45%;top:40%}.p2{right:18%;top:55%;animation-delay:.5s}.p3{left:21%;bottom:25%;animation-delay:1s}@keyframes pulse{50%{transform:scale(1.8);opacity:.3}}
+.story{margin-top:16px;border:3px solid #294d4d;background:#0b1b24;padding:16px;display:flex;gap:16px}.story b{font:10px "Press Start 2P";color:var(--green)}.story p{margin:9px 0 0;font-size:23px;line-height:1.05}
+.success{position:fixed;inset:0;background:#010409ee;display:none;place-items:center;z-index:120;padding:20px}.success.show{display:grid}.success-card{width:min(760px,100%);border:4px solid var(--green);background:#091522;padding:30px;box-shadow:12px 12px var(--shadow);text-align:center}.success-card h2{font:clamp(20px,3vw,34px)/1.5 "Press Start 2P";color:var(--green);margin:0 0 14px}.success-card p{font-size:27px}.reward{display:inline-block;border:3px solid var(--orange);padding:12px 18px;color:var(--orange);font:10px "Press Start 2P";margin:10px 0 22px}
+footer{text-align:center;color:#6f8290;margin-top:20px}
+@media(max-width:980px){.layout,.data{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.shell{width:calc(100% - 18px)}.topbar{position:relative;top:0}.status{display:none}.hero,.hero-content{min-height:550px}.hero-content{padding:30px 24px}.hero p{font-size:24px}h1{font-size:27px}.stage{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+ <div class="brand">ZOMBIE APOCALYPSE <span>// MODULE 09</span></div>
+ <div class="status"><span class="badge online"><i class="dot"></i>SISTEMA ONLINE</span><span class="badge">SETOR: WAR ROOM</span></div>
+</header>
+
+<div class="breadcrumb"><span>BASE CENTRAL / <b>ZOMBIE WAR ROOM</b></span><span>FASE 09 / COMANDO</span></div>
+
+<section class="hero">
+ <img src="assets/Fase9.png" alt="Sala de comando com equipe reunida diante de um grande mapa tático da cidade">
+ <div class="hero-content">
+  <div class="kicker">ZOMBIE WAR ROOM // COMANDO</div>
+  <h1>O TEMPO <em>ESTÁ CONTRA NÓS.</em></h1>
+  <p>Os relatórios chegam em horários diferentes. A central precisa descobrir quais ocorrências são recentes, medir o tempo desde o último contato e ordenar as ameaças dentro de cada zona para decidir quem será atendido primeiro.</p>
+  <span class="hero-tag">MISSÃO 09 — DECIDIR O PRÓXIMO MOVIMENTO</span>
+ </div>
+</section>
+
+<div class="layout">
+<aside>
+<section class="panel">
+ <div class="mission"><strong>MISSÃO ATIVA</strong><p>O War Room recebeu dezenas de relatórios. Você precisa reconstruir a linha do tempo e descobrir qual ameaça ocupa a posição prioritária em cada zona.</p></div>
+ <div class="objective"><b>OBJETIVO PRINCIPAL</b>Use datas para localizar ocorrências recentes e funções de janela para comparar cada ocorrência com as outras dentro de sua zona.</div>
+ <h3>PROTOCOLO DE COMANDO</h3>
+ <ul class="steps">
+  <li class="active" id="s1"><span class="n">01</span> Filtrar por data</li>
+  <li id="s2"><span class="n">02</span> Calcular tempo decorrido</li>
+  <li id="s3"><span class="n">03</span> Rankear ameaças</li>
+  <li id="s4"><span class="n">04</span> Confirmar prioridades</li>
+ </ul>
+</section>
+<section class="panel" style="margin-top:16px">
+ <h3>PROTOCOLO DE APOIO</h3>
+ <p style="color:#aebdc1;line-height:1.05">Dicas infinitas. O comandante pode pedir ajuda antes de cada tentativa.</p>
+ <button class="btn hint" onclick="showHint()">PEDIR DICA</button>
+ <div class="hintbox" id="hintBox"><b>DICA <span id="hintCount">1</span>/12</b><p id="hintText"></p></div>
+</section>
+</aside>
+
+<main>
+<div class="hud">
+ <div class="stat"><b>XP</b><span id="xp">2800</span></div>
+ <div class="stat"><b>FASE</b><span>09 / 10</span></div>
+ <div class="stat"><b>RELATÓRIOS</b><span>12</span></div>
+ <div class="stat"><b>PROGRESSO</b><span id="pct">25%</span><div class="progress"><i id="bar"></i></div></div>
+</div>
+
+<div class="data">
+<section class="panel">
+ <div class="title"><strong>RELATÓRIOS // LINHA DO TEMPO</strong><span>hora registrada</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>ID</th><th>ZONA</th><th>EVENTO</th><th>REGISTRADO</th></tr></thead>
+ <tbody>
+  <tr><td>W-01</td><td>NORTE</td><td>MOVIMENTO</td><td>21:10</td></tr>
+  <tr><td>W-02</td><td>SUL</td><td>RÁDIO</td><td>20:42</td></tr>
+  <tr><td>W-03</td><td>NORTE</td><td>GRUPO</td><td>21:37</td></tr>
+  <tr><td>W-04</td><td>LESTE</td><td>ALARME</td><td>19:58</td></tr>
+  <tr><td>W-05</td><td>SUL</td><td>MOVIMENTO</td><td>21:51</td></tr>
+  <tr><td>W-06</td><td>LESTE</td><td>RÁDIO</td><td>21:22</td></tr>
+ </tbody></table></div>
+</section>
+
+<section class="panel">
+ <div class="title"><strong>AMEAÇAS // PRIORIDADE</strong><span>intensidade</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>ID</th><th>ZONA</th><th>AMEAÇA</th><th>NÍVEL</th></tr></thead>
+ <tbody>
+  <tr><td>T-01</td><td>NORTE</td><td>HORDA</td><td class="alert">94</td></tr>
+  <tr><td>T-02</td><td>NORTE</td><td>MOVIMENTO</td><td class="wait">71</td></tr>
+  <tr><td>T-03</td><td>SUL</td><td>GRUPO</td><td class="alert">88</td></tr>
+  <tr><td>T-04</td><td>SUL</td><td>RUÍDO</td><td class="wait">43</td></tr>
+  <tr><td>T-05</td><td>LESTE</td><td>HORDA</td><td class="alert">91</td></tr>
+  <tr><td>T-06</td><td>LESTE</td><td>RASTRO</td><td class="wait">62</td></tr>
+ </tbody></table></div>
+</section>
+</div>
+
+<section class="panel" style="margin-top:16px">
+ <div class="title"><strong>TERMINAL // COMANDO</strong><span>CTRL + ENTER</span></div>
+ <div class="stage">
+  <button id="stage1" class="btn blue selected" onclick="setStage(1)">01 // DATAS</button>
+  <button id="stage2" class="btn alt" onclick="setStage(2)">02 // INTERVALO</button>
+  <button id="stage3" class="btn alt" onclick="setStage(3)">03 // WINDOW</button>
+ </div>
+ <div class="terminal">
+  <div class="termhead"><b id="termTitle">QUERY CONSOLE // DATAS</b><span>WAR ROOM ACCESS</span></div>
+  <textarea id="editor" class="editor" spellcheck="false">SELECT id, zona, evento, registrado_em
+FROM relatorios
+WHERE registrado_em >= TIMESTAMP '2026-08-19 21:00:00'
+ORDER BY registrado_em DESC;</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">RESTAURAR EXEMPLO</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <div class="output" id="output"><span class="info">ETAPA 1: mostre apenas os relatórios registrados a partir das 21:00 e coloque o mais recente primeiro.</span></div>
+ </div>
+</section>
+
+<section class="result">
+ <div class="result-head"><strong>SAÍDA // ORDEM DE COMANDO</strong><span id="resultStatus">aguardando análise</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>RELATÓRIO</th><th>ZONA</th><th>HORÁRIO</th><th>LEITURA</th></tr></thead>
+ <tbody id="resultBody"><tr><td colspan="4" style="color:#70828d">Nenhuma prioridade confirmada.</td></tr></tbody>
+ </table></div>
+ <div class="command-map" aria-label="Mapa tático de prioridades">
+  <div class="zone z1">NORTE</div><div class="zone z2">CENTRO</div><div class="zone alert z3">LESTE</div><div class="zone z4">SUL</div><div class="zone z5">PORTO</div>
+  <i class="pulse p1"></i><i class="pulse p2"></i><i class="pulse p3"></i>
+ </div>
+</section>
+
+<section class="story">
+ <div style="font-size:38px">🎯</div>
+ <div><b>REGISTRO DO WAR ROOM</b><p>O comandante não precisa apenas saber o que aconteceu. Precisa saber quando aconteceu e qual ameaça ocupa a primeira posição dentro de cada zona. A linha do tempo organiza o passado; a janela permite comparar ocorrências sem perder o contexto da zona.</p></div>
+</section>
+</main>
+</div>
+
+<footer>ZOMBIE WAR ROOM // MÓDULO 09 // SISTEMA DE COMANDO</footer>
+</div>
+
+<div class="success" id="success">
+ <div class="success-card">
+  <h2>PRIORIDADES DEFINIDAS</h2>
+  <p>A linha do tempo foi reconstruída e as ameaças foram ordenadas dentro de cada zona. O War Room agora sabe onde concentrar a próxima equipe.</p>
+  <div class="reward">+700 XP // COMANDO TÁTICO ATIVO</div><br>
+  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+ </div>
+</div>
+
+<script>
+const hints=[
+ "Comece pela coluna que representa o momento em que o relatório chegou.",
+ "Para trabalhar com data e hora, você pode usar TIMESTAMP.",
+ "A primeira etapa pede relatórios a partir de 21:00.",
+ "Use WHERE para limitar o período e ORDER BY para organizar o resultado.",
+ "DESC coloca os horários mais recentes primeiro.",
+ "Na segunda etapa, queremos saber quanto tempo passou desde o registro.",
+ "Você pode subtrair dois valores de data/hora para obter um intervalo.",
+ "CURRENT_TIMESTAMP representa o momento atual do sistema; para a missão, também é possível usar um horário de referência fixo.",
+ "Uma função de janela calcula informação sobre um conjunto de linhas sem eliminar as linhas originais.",
+ "ROW_NUMBER() OVER (...) cria uma posição para cada linha.",
+ "PARTITION BY zona reinicia a numeração dentro de cada zona.",
+ "ORDER BY nivel DESC dentro da janela coloca a ameaça mais intensa em primeiro lugar."
+];
+const examples={
+1:`SELECT id, zona, evento, registrado_em
+FROM relatorios
+WHERE registrado_em >= TIMESTAMP '2026-08-19 21:00:00'
+ORDER BY registrado_em DESC;`,
+2:`SELECT id, zona, evento,
+TIMESTAMP '2026-08-19 22:00:00' - registrado_em AS tempo_decorrido
+FROM relatorios
+WHERE registrado_em >= TIMESTAMP '2026-08-19 21:00:00';`,
+3:`SELECT id, zona, ameaca, nivel,
+ROW_NUMBER() OVER (
+  PARTITION BY zona
+  ORDER BY nivel DESC
+) AS prioridade
+FROM ameacas;`
+};
+let stage=1,hintIndex=0,done=[false,false,false];
+
+function norm(s){return s.toLowerCase().replace(/--.*$/gm,'').replace(/\s+/g,' ').trim()}
+function setStage(n){
+ stage=n;
+ for(let i=1;i<=3;i++)document.getElementById('stage'+i).classList.toggle('selected',i===n);
+ document.getElementById('termTitle').textContent='QUERY CONSOLE // '+['','DATAS','INTERVALO','WINDOW'][n];
+ document.getElementById('editor').value=examples[n];
+ document.getElementById('output').innerHTML='<span class="info">'+[
+  '',
+  'ETAPA 1: filtre relatórios recentes e organize a linha do tempo.',
+  'ETAPA 2: calcule quanto tempo passou desde cada relatório.',
+  'ETAPA 3: crie uma prioridade dentro de cada zona usando uma função de janela.'
+ ][n]+'</span>';
+}
+function fail(msg){document.getElementById('output').innerHTML='<span class="err">⚠ '+msg+'</span>'}
+function runQuery(){
+ const q=norm(document.getElementById('editor').value);
+ if(stage===1){
+  if(!/^select\b/.test(q))return fail('Comece com SELECT.');
+  if(!/from\s+relatorios/.test(q))return fail('A consulta deve usar relatorios.');
+  if(!/where\s+.*registrado_em\s*>=/.test(q))return fail('Filtre os relatórios usando registrado_em >=.');
+  if(!/timestamp\s*['"]2026-08-19 21:00:00/.test(q))return fail('Use o horário de referência 21:00.');
+  if(!/order\s+by\s+registrado_em\s+desc/.test(q))return fail('Ordene registrado_em em DESC para colocar o mais recente primeiro.');
+  done[0]=true;
+  document.getElementById('resultBody').innerHTML=`
+   <tr><td>W-05</td><td>SUL</td><td>21:51</td><td class="alert">MAIS RECENTE</td></tr>
+   <tr><td>W-03</td><td>NORTE</td><td>21:37</td><td class="alert">ATENÇÃO</td></tr>
+   <tr><td>W-06</td><td>LESTE</td><td>21:22</td><td class="wait">ATENÇÃO</td></tr>
+   <tr><td>W-01</td><td>NORTE</td><td>21:10</td><td class="wait">ATENÇÃO</td></tr>`;
+  successStage('DATAS VALIDADAS. A linha do tempo foi reconstruída.',1);return;
+ }
+ if(stage===2){
+  if(!/^select\b/.test(q))return fail('Comece com SELECT.');
+  if(!/from\s+relatorios/.test(q))return fail('A consulta deve usar relatorios.');
+  if(!/registrado_em/.test(q))return fail('Inclua a coluna registrado_em.');
+  if(!/timestamp\s*['"]2026-08-19 22:00:00/.test(q))return fail('Use 22:00 como horário de referência da central.');
+  if(!/-\s*registrado_em/.test(q))return fail('Subtraia registrado_em do horário de referência para calcular o intervalo.');
+  if(!/as\s+tempo_decorrido/.test(q))return fail('Dê ao intervalo o nome tempo_decorrido.');
+  done[1]=true;
+  document.getElementById('resultBody').innerHTML=`
+   <tr><td>W-05</td><td>SUL</td><td>21:51</td><td class="alert">00:09 DECORRIDO</td></tr>
+   <tr><td>W-03</td><td>NORTE</td><td>21:37</td><td class="alert">00:23 DECORRIDO</td></tr>
+   <tr><td>W-06</td><td>LESTE</td><td>21:22</td><td class="wait">00:38 DECORRIDO</td></tr>
+   <tr><td>W-01</td><td>NORTE</td><td>21:10</td><td class="wait">00:50 DECORRIDO</td></tr>`;
+  successStage('INTERVALO VALIDADO. Agora o comando sabe há quanto tempo cada relatório está silencioso.',2);return;
+ }
+ if(!/^select\b/.test(q))return fail('Comece com SELECT.');
+ if(!/row_number\s*\(\s*\)\s*over\s*\(/.test(q))return fail('Use ROW_NUMBER() OVER (...) para criar a posição.');
+ if(!/partition\s+by\s+zona/.test(q))return fail('Use PARTITION BY zona para reiniciar a prioridade em cada zona.');
+ if(!/order\s+by\s+nivel\s+desc/.test(q))return fail('Dentro da janela, ordene nivel DESC para colocar a ameaça mais intensa primeiro.');
+ if(!/from\s+ameacas/.test(q))return fail('A consulta final deve usar a tabela ameacas.');
+ done[2]=true;
+ document.getElementById('resultBody').innerHTML=`
+  <tr><td>T-01</td><td>NORTE</td><td>94</td><td class="alert">PRIORIDADE #1</td></tr>
+  <tr><td>T-03</td><td>SUL</td><td>88</td><td class="alert">PRIORIDADE #1</td></tr>
+  <tr><td>T-05</td><td>LESTE</td><td>91</td><td class="alert">PRIORIDADE #1</td></tr>
+  <tr><td>T-02</td><td>NORTE</td><td>71</td><td class="wait">PRIORIDADE #2</td></tr>
+  <tr><td>T-06</td><td>LESTE</td><td>62</td><td class="wait">PRIORIDADE #2</td></tr>
+  <tr><td>T-04</td><td>SUL</td><td>43</td><td class="wait">PRIORIDADE #2</td></tr>`;
+ successStage('WINDOW VALIDADA. Cada zona agora possui sua própria ordem de prioridade.',3);
+}
+function successStage(msg,n){
+ document.getElementById('output').innerHTML='<span class="ok">✓ '+msg+'</span>';
+ document.getElementById('resultStatus').textContent='etapa '+n+' / 3 confirmada';document.getElementById('resultStatus').style.color='var(--green)';
+ document.getElementById('s'+n).classList.add('done');document.getElementById('s'+n).classList.remove('active');
+ if(n<3)document.getElementById('s'+(n+1)).classList.add('active');
+ const count=done.filter(Boolean).length;
+ document.getElementById('xp').textContent=2800+count*230;
+ document.getElementById('pct').textContent=count===3?'100%':Math.round(count/3*100)+'%';
+ document.getElementById('bar').style.width=(count/3*100)+'%';
+ if(count===3)setTimeout(()=>document.getElementById('success').classList.add('show'),450);
+}
+function resetQuery(){document.getElementById('editor').value=examples[stage]}
+function showHint(){
+ document.getElementById('hintBox').classList.add('show');
+ document.getElementById('hintText').textContent=hints[Math.min(hintIndex,hints.length-1)];
+ document.getElementById('hintCount').textContent=Math.min(hintIndex+1,hints.length);
+ if(hintIndex<hints.length-1)hintIndex++;
+}
+function closeSuccess(){document.getElementById('success').classList.remove('show')}
+document.getElementById('editor').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}})
+</script>
+</body>
+</html>

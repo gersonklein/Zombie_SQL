@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Zombie Apocalypse — Módulo 05: Zombie Radio — Investigação.">
+<title>Zombie Apocalypse — Módulo 05: Zombie Radio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{
+ --bg:#040811;--panel:#0b1623;--line:#29465b;--cyan:#38ded4;--green:#9cf34b;
+ --red:#ff405d;--orange:#ffb43d;--yellow:#f1d34d;--cream:#eee3c2;--muted:#8094a2;--shadow:#02050a
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% 0,#14233c,#050a13 47%,#02050b);
+ color:var(--cream);font-family:VT323,monospace;font-size:21px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;
+ background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);background-size:4px 4px}
+button,textarea{font:inherit}button{cursor:pointer}
+.shell{width:min(1400px,calc(100% - 28px));margin:auto;padding:14px 0 35px}
+.topbar{min-height:64px;border:3px solid var(--line);background:#081220;display:flex;align-items:center;
+ justify-content:space-between;padding:9px 14px;box-shadow:6px 6px var(--shadow);position:sticky;top:8px;z-index:80}
+.brand{font:12px/1.5 "Press Start 2P";color:var(--green)}.brand span{color:var(--cream)}
+.status{display:flex;gap:8px}.badge{border:2px solid var(--line);padding:7px 10px;background:#0d1a2a;color:#b9c9ce;font-size:17px}
+.online{border-color:#355d43!important;color:var(--green)!important}.dot{display:inline-block;width:8px;height:8px;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:5px}
+.breadcrumb{display:flex;justify-content:space-between;margin:18px 0 12px;color:var(--muted)}.breadcrumb b{color:var(--cyan);font-weight:400}
+.hero{position:relative;min-height:445px;border:4px solid #1d3b50;overflow:hidden;background:#07101c;box-shadow:10px 10px var(--shadow)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.88) contrast(1.08)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,7,14,.99),rgba(3,7,14,.86) 34%,rgba(3,7,14,.34) 72%,rgba(3,7,14,.42)),linear-gradient(0deg,rgba(3,7,14,.84),transparent 58%)}
+.hero-content{position:relative;z-index:2;max-width:710px;min-height:445px;padding:44px 42px;display:flex;flex-direction:column;justify-content:center}
+.kicker{font:10px/1.7 "Press Start 2P";color:var(--cyan);margin-bottom:18px}
+h1{font:clamp(25px,4vw,51px)/1.25 "Press Start 2P";margin:0 0 14px;text-shadow:5px 5px #030711}
+h1 em{color:var(--red);font-style:normal}.hero p{font-size:28px;line-height:1.02;max-width:650px;margin:0 0 22px}
+.hero-tag{display:inline-block;width:max-content;border:2px solid var(--cyan);color:var(--cyan);padding:8px 10px;font:9px "Press Start 2P";background:#07161dcc}
+.layout{display:grid;grid-template-columns:325px 1fr;gap:16px;margin-top:18px}
+.panel{background:linear-gradient(180deg,#101d2d,#091420);border:3px solid var(--line);padding:18px;box-shadow:6px 6px var(--shadow)}
+.panel h3{font:11px/1.5 "Press Start 2P";color:var(--green);margin:0 0 15px}
+.mission{background:#fff0c5;color:#152019;border:3px solid #152019;padding:16px;box-shadow:5px 5px var(--orange);margin-bottom:17px}
+.mission strong{font:9px/1.6 "Press Start 2P";color:#b42b42}.mission p{font-size:23px;line-height:1.05;margin:12px 0 0}
+.objective{border:2px solid #5c4c25;background:#171b18;padding:13px;margin-bottom:15px;color:#e8dcae}
+.objective b{display:block;color:var(--yellow);font:9px "Press Start 2P";margin-bottom:8px}
+.steps{list-style:none;margin:0;padding:0}.steps li{border-bottom:1px solid #25394c;padding:9px 0;color:#9eb1b9}
+.steps li.done{color:var(--green)}.steps li.active{color:var(--cream)}.n{display:inline-block;width:26px;color:var(--cyan)}
+.hintbox{margin-top:14px;border:2px solid #5b4a28;background:#171a17;padding:13px;display:none}.hintbox.show{display:block}
+.hintbox b{font:9px "Press Start 2P";color:var(--yellow)}.hintbox p{margin:9px 0;color:#e0d5ad;line-height:1.05}
+.btn{border:3px solid #07110d;background:var(--green);color:#07110b;padding:11px 13px;box-shadow:4px 4px #426c25;font:9px "Press Start 2P"}
+.btn.alt{background:#122237;color:var(--cream);border-color:var(--cream);box-shadow:4px 4px #02050a}.btn.hint{background:var(--orange);box-shadow:4px 4px #754e1e}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}.stat{border:2px solid var(--line);background:#091420;padding:10px}
+.stat b{display:block;font:9px "Press Start 2P";color:var(--cyan);margin-bottom:7px}.stat span{font-size:21px}
+.progress{height:17px;border:2px solid var(--line);background:#050b14;margin-top:9px}.progress i{display:block;width:25%;height:100%;background:var(--green);transition:.35s}
+.data{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.title{display:flex;justify-content:space-between;margin-bottom:12px}.title strong{font:10px "Press Start 2P";color:var(--orange)}.title span{color:var(--muted)}
+.table-wrap{overflow:auto;border:2px solid #263d54;background:#07111d}table{width:100%;border-collapse:collapse;min-width:460px}
+th,td{padding:10px;border-bottom:1px solid #20354a;text-align:left}th{background:#12253a;color:var(--cyan);font:9px "Press Start 2P"}td{font-size:20px}
+.signal{color:var(--green)}.weak{color:var(--yellow)}.unknown{color:var(--red)}
+.terminal{border:3px solid #182e43;background:#03070d;box-shadow:inset 0 0 35px #000;min-height:390px}
+.termhead{padding:10px 12px;border-bottom:2px solid #1d3348;background:#0a1420;display:flex;justify-content:space-between}
+.termhead b{font:9px "Press Start 2P";color:var(--green)}.editor{width:100%;min-height:175px;resize:vertical;border:0;border-bottom:2px solid #173047;
+ outline:0;background:#02060b;color:#b9ff9c;padding:15px;font:23px/1.05 VT323}.actions{display:flex;gap:9px;padding:10px;flex-wrap:wrap}
+.output{padding:12px;min-height:105px;background:#06101a}.ok{color:var(--green)}.err{color:#ff6b7c}.info{color:var(--cyan)}
+.result{margin-top:16px;border:3px solid var(--line);background:#081321;padding:15px}.result-head{display:flex;justify-content:space-between;margin-bottom:10px}
+.result strong{font:10px "Press Start 2P";color:var(--cyan)}
+.story{margin-top:16px;border:3px solid #294d4d;background:#0b1b24;padding:16px;display:flex;gap:16px}
+.story b{font:10px "Press Start 2P";color:var(--green)}.story p{margin:9px 0 0;font-size:23px;line-height:1.05}
+.signal-box{border:2px solid #29465b;background:#050b14;padding:14px;margin-top:14px}.signal-line{height:32px;display:flex;align-items:end;gap:4px}
+.signal-line i{display:block;width:7px;background:var(--cyan);animation:pulse 1.2s infinite ease-in-out}
+.signal-line i:nth-child(2n){animation-delay:.15s}.signal-line i:nth-child(3n){animation-delay:.3s}
+@keyframes pulse{50%{height:28px;opacity:.5}}
+.success{position:fixed;inset:0;background:#010409ee;display:none;place-items:center;z-index:120;padding:20px}.success.show{display:grid}
+.success-card{width:min(720px,100%);border:4px solid var(--green);background:#091522;padding:30px;box-shadow:12px 12px var(--shadow);text-align:center}
+.success-card h2{font:clamp(20px,3vw,34px)/1.5 "Press Start 2P";color:var(--green);margin:0 0 14px}.success-card p{font-size:27px}
+.reward{display:inline-block;border:3px solid var(--orange);padding:12px 18px;color:var(--orange);font:10px "Press Start 2P";margin:10px 0 22px}
+footer{text-align:center;color:#6f8290;margin-top:20px}
+@media(max-width:980px){.layout,.data{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.shell{width:calc(100% - 18px)}.topbar{position:relative;top:0}.status{display:none}.hero,.hero-content{min-height:520px}
+.hero-content{padding:30px 24px}.hero p{font-size:24px}h1{font-size:27px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+ <div class="brand">ZOMBIE APOCALYPSE <span>// MODULE 05</span></div>
+ <div class="status"><span class="badge online"><i class="dot"></i>SISTEMA ONLINE</span><span class="badge">SETOR: RÁDIO</span></div>
+</header>
+
+<div class="breadcrumb"><span>BASE CENTRAL / <b>ZOMBIE RADIO</b></span><span>FASE 05 / INVESTIGAÇÃO</span></div>
+
+<section class="hero">
+ <img src="assets/Fase5.png" alt="Operador de rádio em uma central noturna monitorando transmissões e mapas">
+ <div class="hero-content">
+  <div class="kicker">ZOMBIE RADIO // INVESTIGAÇÃO</div>
+  <h1>O SINAL <em>VOLTOU.</em></h1>
+  <p>Uma transmissão fragmentada atravessou a noite. O operador registrou o código da mensagem, mas o nome do transmissor está em outro arquivo. Cruze as informações e descubra quem pediu ajuda.</p>
+  <span class="hero-tag">MISSÃO 05 — CRUZAR A TRANSMISSÃO</span>
+ </div>
+</section>
+
+<div class="layout">
+<aside>
+<section class="panel">
+ <div class="mission"><strong>MISSÃO ATIVA</strong><p>O rádio captou uma mensagem de emergência. Temos o código do sinal, mas precisamos descobrir quem o enviou e de qual abrigo.</p></div>
+ <div class="objective"><b>OBJETIVO PRINCIPAL</b>Relacione as <strong>transmissões</strong> aos <strong>sobreviventes</strong> usando a identificação compartilhada.</div>
+ <h3>ROTEIRO DA INVESTIGAÇÃO</h3>
+ <ul class="steps">
+  <li class="active" id="s1"><span class="n">01</span> Encontrar a chave comum</li>
+  <li id="s2"><span class="n">02</span> Cruzar as tabelas</li>
+  <li id="s3"><span class="n">03</span> Localizar o transmissor</li>
+  <li id="s4"><span class="n">04</span> Confirmar a mensagem</li>
+ </ul>
+</section>
+<section class="panel" style="margin-top:16px">
+ <h3>PROTOCOLO DE APOIO</h3>
+ <p style="color:#aebdc1;line-height:1.05">As dicas são infinitas. Nenhum operador fica sozinho diante de um sinal desconhecido.</p>
+ <button class="btn hint" onclick="showHint()">PEDIR DICA</button>
+ <div class="hintbox" id="hintBox"><b>DICA <span id="hintCount">1</span>/8</b><p id="hintText"></p></div>
+ <div class="signal-box"><div style="font:9px 'Press Start 2P';color:var(--cyan);margin-bottom:8px">SINAL AO VIVO</div>
+  <div class="signal-line" aria-label="Sinal de rádio animado">
+   <i style="height:13px"></i><i style="height:27px"></i><i style="height:18px"></i><i style="height:31px"></i><i style="height:10px"></i><i style="height:23px"></i><i style="height:16px"></i><i style="height:29px"></i><i style="height:12px"></i><i style="height:25px"></i>
+  </div>
+ </div>
+</section>
+</aside>
+
+<main>
+<div class="hud">
+ <div class="stat"><b>XP</b><span id="xp">1050</span></div>
+ <div class="stat"><b>FASE</b><span>05 / 10</span></div>
+ <div class="stat"><b>SINAIS</b><span>06</span></div>
+ <div class="stat"><b>PROGRESSO</b><span id="pct">25%</span><div class="progress"><i id="bar"></i></div></div>
+</div>
+
+<div class="data">
+<section class="panel">
+ <div class="title"><strong>TRANSMISSÕES // LOG</strong><span>últimas capturas</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>ID</th><th>CÓDIGO</th><th>CANAL</th><th>STATUS</th></tr></thead>
+ <tbody>
+  <tr><td>01</td><td>RX-041</td><td>07.2</td><td class="weak">FRACO</td></tr>
+  <tr><td>02</td><td>RX-118</td><td>12.4</td><td class="signal">LIMPO</td></tr>
+  <tr><td>03</td><td>RX-204</td><td>07.2</td><td class="unknown">CODIFICADO</td></tr>
+  <tr><td>04</td><td>RX-317</td><td>18.9</td><td class="signal">LIMPO</td></tr>
+  <tr><td>05</td><td>RX-402</td><td>04.8</td><td class="weak">FRACO</td></tr>
+  <tr><td>06</td><td>RX-512</td><td>18.9</td><td class="signal">LIMPO</td></tr>
+ </tbody>
+ </table></div>
+</section>
+
+<section class="panel">
+ <div class="title"><strong>SOBREVIVENTES // CADASTRO</strong><span>identidades</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>ID</th><th>NOME</th><th>ABRIGO</th><th>CÓDIGO</th></tr></thead>
+ <tbody>
+  <tr><td>11</td><td>LIA</td><td>NORTE</td><td>RX-118</td></tr>
+  <tr><td>12</td><td>CAIO</td><td>SUL</td><td>RX-402</td></tr>
+  <tr><td>13</td><td>MAYA</td><td>NORTE</td><td>RX-204</td></tr>
+  <tr><td>14</td><td>JOÃO</td><td>LESTE</td><td>RX-317</td></tr>
+  <tr><td>15</td><td>RITA</td><td>OESTE</td><td>RX-512</td></tr>
+  <tr><td>16</td><td>NOAH</td><td>NORTE</td><td>RX-041</td></tr>
+ </tbody>
+ </table></div>
+</section>
+</div>
+
+<section class="panel" style="margin-top:16px">
+ <div class="title"><strong>TERMINAL // ESCUTA</strong><span>cruzamento autorizado</span></div>
+ <div class="terminal">
+  <div class="termhead"><b>QUERY CONSOLE</b><span>CTRL + ENTER</span></div>
+  <textarea id="editor" class="editor" spellcheck="false">SELECT
+  sobreviventes.nome,
+  sobreviventes.abrigo,
+  transmissoes.codigo,
+  transmissoes.canal
+FROM sobreviventes
+JOIN transmissoes
+  ON sobreviventes.codigo = transmissoes.codigo
+WHERE transmissoes.codigo = 'RX-204';</textarea>
+  <div class="actions"><button class="btn" onclick="runQuery()">EXECUTAR</button><button class="btn alt" onclick="resetQuery()">LIMPAR</button><button class="btn hint" onclick="showHint()">DICA</button></div>
+  <div class="output" id="output"><span class="info">Terminal pronto. Qual identidade está escondida por trás do sinal RX-204?</span></div>
+ </div>
+</section>
+
+<section class="result">
+ <div class="result-head"><strong>SAÍDA // IDENTIDADE DO SINAL</strong><span id="resultStatus">aguardando consulta</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>NOME</th><th>ABRIGO</th><th>CÓDIGO</th><th>CANAL</th><th>STATUS</th></tr></thead>
+ <tbody id="resultBody"><tr><td colspan="5" style="color:#70828d">Nenhuma identidade confirmada.</td></tr></tbody>
+ </table></div>
+</section>
+
+<section class="story">
+ <div style="font-size:38px">📻</div>
+ <div><b>REGISTRO DA TRANSMISSÃO</b>
+ <p>Uma mensagem isolada é apenas ruído. Quando duas fontes compartilham uma chave, a conexão revela uma história: quem transmitiu, de onde veio o sinal e onde procurar.</p></div>
+</section>
+</main>
+</div>
+
+<footer>ZOMBIE RADIO // MÓDULO 05 // SISTEMA DE SOBREVIVÊNCIA</footer>
+</div>
+
+<div class="success" id="success">
+ <div class="success-card">
+  <h2>SINAL IDENTIFICADO</h2>
+  <p>A transmissão RX-204 pertence a MAYA, do abrigo NORTE. A equipe agora sabe onde concentrar a busca.</p>
+  <div class="reward">+400 XP // NOVA PISTA DESBLOQUEADA</div><br>
+  <button class="btn" onclick="closeSuccess()">CONTINUAR</button>
+ </div>
+</div>
+
+<script>
+const hints=[
+ "Observe as duas tabelas: existe uma informação que aparece nas duas.",
+ "A coluna codigo está presente nas transmissões e também no cadastro.",
+ "Quando duas tabelas possuem uma chave relacionada, podemos cruzar seus registros.",
+ "Use JOIN para combinar registros relacionados.",
+ "A relação pode ser expressa com ON sobreviventes.codigo = transmissoes.codigo.",
+ "A missão quer investigar especificamente o sinal RX-204.",
+ "Use WHERE para filtrar a transmissão que estamos investigando.",
+ "A estrutura final combina SELECT, FROM, JOIN ... ON e WHERE."
+];
+let hintIndex=0;
+
+function normalize(s){return s.toLowerCase().replace(/--.*$/gm,'').replace(/\s+/g,' ').trim()}
+
+function runQuery(){
+ const q=normalize(document.getElementById('editor').value);
+ const out=document.getElementById('output');
+ const checks=[
+  [/select\\b/,'Comece com SELECT: precisamos escolher as informações da investigação.'],
+  [/sobreviventes/,'A primeira fonte da investigação é sobreviventes.'],
+  [/transmissoes/,'A segunda fonte da investigação é transmissoes.'],
+  [/join\\s+transmissoes/,'Use JOIN para cruzar o cadastro com as transmissões.'],
+  [/on\\s+.*sobreviventes\\.codigo\\s*=\\s*transmissoes\\.codigo/,'O cruzamento deve usar a mesma chave: sobreviventes.codigo = transmissoes.codigo.'],
+  [/where/,'Use WHERE para restringir a investigação ao sinal que interessa.'],
+  [/rx-204/,'O sinal investigado nesta missão é RX-204.']
+ ];
+ for(const [r,msg] of checks){
+  if(!r.test(q)){out.innerHTML='<span class="err">⚠ '+msg+'</span>';return}
+ }
+ document.getElementById('resultBody').innerHTML='<tr><td>MAYA</td><td>NORTE</td><td class="signal">RX-204</td><td>07.2</td><td class="signal">IDENTIFICADO</td></tr>';
+ document.getElementById('resultStatus').textContent='identidade confirmada';
+ document.getElementById('resultStatus').style.color='var(--green)';
+ out.innerHTML='<span class="ok">✓ CRUZAMENTO VALIDADO.</span><br>RX-204 pertence a MAYA, localizada no abrigo NORTE.';
+ document.getElementById('xp').textContent='1450';
+ document.getElementById('pct').textContent='100%';
+ document.getElementById('bar').style.width='100%';
+ ['s1','s2','s3','s4'].forEach(id=>{document.getElementById(id).classList.add('done');document.getElementById(id).classList.remove('active')});
+ setTimeout(()=>document.getElementById('success').classList.add('show'),450);
+}
+
+function resetQuery(){
+ document.getElementById('editor').value='';
+ document.getElementById('output').innerHTML='<span class="info">Terminal limpo. Reconstrua o cruzamento sem perder o sinal.</span>';
+}
+function showHint(){
+ document.getElementById('hintBox').classList.add('show');
+ document.getElementById('hintText').textContent=hints[Math.min(hintIndex,hints.length-1)];
+ document.getElementById('hintCount').textContent=Math.min(hintIndex+1,hints.length);
+ if(hintIndex<hints.length-1)hintIndex++;
+}
+function closeSuccess(){document.getElementById('success').classList.remove('show')}
+document.getElementById('editor').addEventListener('keydown',e=>{
+ if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery()}
+});
+</script>
+</body>
+</html>
