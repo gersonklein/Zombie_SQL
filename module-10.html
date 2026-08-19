@@ -218,7 +218,7 @@ function runQuery(){
   if(!/from\s+pontos_interesse/.test(q))return fail('Consulte pontos_interesse.');
   if(!/st_dwithin\s*\(/.test(q))return fail('Use ST_DWithin para verificar o alcance.');
   if(!/st_makepoint\s*\(\s*-51\.2300\s*,\s*-30\.0300\s*\)/.test(q))return fail('Use as coordenadas da central: longitude -51.2300 e latitude -30.0300.');
-  if(!/st_setsrid\s*\([^)]*4326/.test(q))return fail('Defina o SRID 4326 com ST_SetSRID.');
+  if(!/st_setsrid\s*\(.*4326/.test(q))return fail('Defina o SRID 4326 com ST_SetSRID.');
   if(!/5000/.test(q))return fail('O raio da missão é de 5000 metros.');
   done[0]=true;
   document.getElementById('resultBody').innerHTML=`
