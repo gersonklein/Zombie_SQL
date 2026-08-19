@@ -75,6 +75,25 @@ a{color:inherit;text-decoration:none}
 
 @media(max-width:1000px){.campaign{grid-template-columns:repeat(2,1fr)}.command{grid-template-columns:1fr}.hero{min-height:570px}.hero-content{min-height:570px}}
 @media(max-width:600px){.shell{padding:10px}.topbar{position:static;height:auto;align-items:flex-start}.status{display:none}.hero{min-height:600px}.hero-content{min-height:600px;padding:28px 20px}.stamp{right:14px;top:14px}.campaign{grid-template-columns:1fr}.hero p{font-size:25px}.stats{grid-template-columns:1fr}}
+
+.locked-note{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:14px;
+  border:2px solid #30435a;
+  padding:8px 10px;
+  color:#72818b;
+  background:#0a1422;
+  font-size:16px;
+  text-align:center;
+}
+.module button{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:14px;
+}
 </style>
 </head>
 <body>
@@ -118,8 +137,8 @@ a{color:inherit;text-decoration:none}
     <div class="progress"><i></i></div>
     <div class="stats">
       <div class="stat"><b>01 → 02</b><span>Próxima etapa disponível</span></div>
-      <div class="stat"><b id="campaignXP">000</b><span>XP acumulado</span></div>
-      <div class="stat"><b id="campaignPct">0%</b><span>Campanha</span></div>
+      <div class="stat"><b>000</b><span>XP acumulado</span></div>
+      <div class="stat"><b>0%</b><span>Campanha</span></div>
     </div>
   </div>
 
@@ -148,49 +167,69 @@ const modules = [
 ];
 const root=document.getElementById("modules");
 
-function isCompleted(n){
-  return localStorage.getItem(`zombieApocalypse.module${String(n).padStart(2,"0")}.completed`) === "true";
+/*
+  SISTEMA ÚNICO DE PROGRESSÃO
+  ---------------------------
+  Cada módulo grava:
+    zombieApocalypse.moduleNN.completed = "true"
+
+  Exemplo:
+    module02.completed = true
+    => módulo 03 fica disponível.
+
+  O index NÃO usa mais "locked" fixo no array.
+*/
+
+function completed(moduleNumber){
+  return localStorage.getItem(
+    `zombieApocalypse.module${String(moduleNumber).padStart(2,"0")}.completed`
+  ) === "true";
 }
 
-function getState(index){
-  // O módulo 01 sempre inicia disponível.
-  if(index === 0) return "active";
+function getModuleState(moduleNumber){
+  if(moduleNumber === 1) return "active";
 
-  // Um módulo só fica disponível quando o anterior foi concluído.
-  if(isCompleted(index)) return "available";
-  return "locked";
+  // O módulo N é liberado quando o módulo anterior terminou.
+  return completed(moduleNumber - 1) ? "available" : "locked";
 }
 
-modules.forEach((m, index)=>{
-  const el=document.createElement("article");
-  const state=getState(index);
-  el.className="module "+(state==="active"?"active ":"")+(state==="locked"?"locked":"");
+modules.forEach((m)=>{
+  const moduleNumber = Number(m[0]);
+  const state = getModuleState(moduleNumber);
+
+  const el = document.createElement("article");
+  el.className =
+    "module " +
+    (state === "active" ? "active " : "") +
+    (state === "locked" ? "locked" : "");
 
   const stateLabel =
-    state==="active" ? "● ATUAL" :
-    state==="available" ? "● DISPONÍVEL" :
-    "🔒 BLOQUEADO";
+    state === "active"
+      ? "● ATUAL"
+      : state === "available"
+        ? "● DISPONÍVEL"
+        : "🔒 BLOQUEADO";
 
   el.innerHTML =
-    `<div class="num">MÓDULO ${m[0]}</div>`+
-    `<div class="state">${stateLabel}</div>`+
-    `<h3>${m[1]}</h3><p>${m[2]}</p>`+
-    (state==="locked" ? "" : `<button onclick="location.href='${m[3]}'">▶ ENTRAR</button>`);
+    `<div class="num">MÓDULO ${m[0]}</div>` +
+    `<div class="state">${stateLabel}</div>` +
+    `<h3>${m[1]}</h3>` +
+    `<p>${m[2]}</p>` +
+    (
+      state === "locked"
+        ? `<div class="locked-note">Conclua o módulo anterior</div>`
+        : `<button type="button" data-module="${m[3]}">▶ ENTRAR</button>`
+    );
+
+  if(state !== "locked"){
+    const button = el.querySelector("button");
+    button.addEventListener("click", ()=>{
+      window.location.href = m[3];
+    });
+  }
 
   root.appendChild(el);
 });
-
-const currentModule = Math.min(
-  10,
-  Math.max(1, parseInt(localStorage.getItem("zombieApocalypse.currentModule") || "1", 10))
-);
-const xp = localStorage.getItem("zombieApocalypse.xp") || "0";
-const completedCount = Array.from({length:10}, (_,i)=>isCompleted(i+1)).filter(Boolean).length;
-const pct = Math.round((completedCount / 10) * 100);
-
-document.getElementById("campaignModule").textContent = `${String(currentModule).padStart(2,"0")} / 10`;
-document.getElementById("campaignXP").textContent = String(xp).padStart(3,"0");
-document.getElementById("campaignPct").textContent = `${pct}%`;
 </script>
 </body>
 </html>
