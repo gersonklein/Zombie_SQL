@@ -118,8 +118,8 @@ a{color:inherit;text-decoration:none}
     <div class="progress"><i></i></div>
     <div class="stats">
       <div class="stat"><b>01 → 02</b><span>Próxima etapa disponível</span></div>
-      <div class="stat"><b>000</b><span>XP acumulado</span></div>
-      <div class="stat"><b>0%</b><span>Campanha</span></div>
+      <div class="stat"><b id="campaignXP">000</b><span>XP acumulado</span></div>
+      <div class="stat"><b id="campaignPct">0%</b><span>Campanha</span></div>
     </div>
   </div>
 
@@ -147,21 +147,50 @@ const modules = [
   ["10","WORLD DB","Reconstrução","module-10.html",true,"locked"]
 ];
 const root=document.getElementById("modules");
-modules.forEach(m=>{
+
+function isCompleted(n){
+  return localStorage.getItem(`zombieApocalypse.module${String(n).padStart(2,"0")}.completed`) === "true";
+}
+
+function getState(index){
+  // O módulo 01 sempre inicia disponível.
+  if(index === 0) return "active";
+
+  // Um módulo só fica disponível quando o anterior foi concluído.
+  if(isCompleted(index)) return "available";
+  return "locked";
+}
+
+modules.forEach((m, index)=>{
   const el=document.createElement("article");
-  const state=m[5] || (m[4] ? "locked" : "available");
+  const state=getState(index);
   el.className="module "+(state==="active"?"active ":"")+(state==="locked"?"locked":"");
+
   const stateLabel =
     state==="active" ? "● ATUAL" :
     state==="available" ? "● DISPONÍVEL" :
     "🔒 BLOQUEADO";
+
   el.innerHTML =
     `<div class="num">MÓDULO ${m[0]}</div>`+
     `<div class="state">${stateLabel}</div>`+
     `<h3>${m[1]}</h3><p>${m[2]}</p>`+
     (state==="locked" ? "" : `<button onclick="location.href='${m[3]}'">▶ ENTRAR</button>`);
+
   root.appendChild(el);
 });
+
+const currentModule = Math.min(
+  10,
+  Math.max(1, parseInt(localStorage.getItem("zombieApocalypse.currentModule") || "1", 10))
+);
+const xp = localStorage.getItem("zombieApocalypse.xp") || "0";
+const completedCount = Array.from({length:10}, (_,i)=>isCompleted(i+1)).filter(Boolean).length;
+const pct = Math.round((completedCount / 10) * 100);
+
+document.getElementById("campaignModule").textContent = `${String(currentModule).padStart(2,"0")} / 10`;
+document.getElementById("campaignXP").textContent = String(xp).padStart(3,"0");
+document.getElementById("campaignPct").textContent = `${pct}%`;
 </script>
 </body>
 </html>
